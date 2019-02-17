@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/grid.css">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <script src="js/jquery-3.3.1.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/grid.js"></script>
+    <!-- Title -->
+    <title>Proyecto IC</title>
+</head>
+
+<body style="background-color: #f5f5f5">
+
+	<div class="container">
+
+        <div class="row d-flex flex-row flex-nowrap my-3">
+            <h2>Práctica 1 : IC</h2>
+        </div>
+        
+        <div class="row mx-0 mt-4">
+
+            <div id="generatingForm" class="card px-0 col-3 form mx-auto my-auto card">
+                <div class="card-header text-center">
+                    <h2 class="m-0">A-Star algorithm</h2>
+                </div>
+                <div class="card-body px-5">
+                    <div class="form-group">
+                        <label for="rows">Number of rows</label>
+                        <div>
+                            <input type="number" class="form-control is-invalid" id="rows" name="rows">
+                            <div class="invalid-feedback"></div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="columns">Number of columns</label>
+                        <div>
+                            <input type="number" class="form-control" id="columns" name="columns">
+                            <div class="invalid-feedback"></div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="columns">Initial node</label>
+                        <div class="row d-flex flex-row flex-nowrap">
+                            <label for="initNodeX" class="col-3">X</label>
+                            <input type="number" class="col-8 form-control" id="initNodeX" name="initNodeX"></input>
+                            <div class="invalid-feedback"></div>
+                        </div>
+                        <div class="row d-flex flex-row flex-nowrap">
+                            <label for="initNodeY" class="col-3">Y</label>
+                            <input type="number" class="col-8 form-control" id="initNodeY" name="initNodeY"></input>
+                            <div class="invalid-feedback"></div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                            <label for="columns">End node</label>
+                            <div class="row d-flex flex-row flex-nowrap">
+                                <label for="endNodeX" class="col-3">X</label>
+                                <input type="number" class="col-8 form-control" id="endNodeX" name="endNodeX"></input>
+                                <div class="invalid-feedback"></div>
+                            </div>
+                            <div class="row d-flex flex-row flex-nowrap">
+                                <label for="endNodeY" class="col-3">Y</label>
+                                <input type="number" class="col-8 form-control" id="endNodeY" name="endNodeY"></input>
+                                <div class="invalid-feedback"></div>
+                            </div>
+                        </div>
+                    
+                    <button type="submit" id="generateBtn" class="btn btn-block">
+                        Generate
+                    </button>
+                    
+                </div>
+                
+            </div>
+
+        </div>
+
+        <div class="row" id="gridContainer" class="">
+            <div class="grid mx-auto">
+
+            </div>
+        </div>
+
+    </div>
+    
+</body>
+</html>

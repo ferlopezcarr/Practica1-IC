@@ -1,0 +1,377 @@
+/* ---------- CSS MeetAndShare ----------*/
+
+.logo {
+	height: 85px;
+	wdith: auto;
+}
+
+.image-bck {
+	width: 100%;
+	height: 30rem;
+	background-image: url(../img/friends.png);
+	background-size: 100%;
+	background-repeat: no-repeat;
+	background-position: center center;
+}
+
+.rounded-chat-image-bck {
+	padding: 10rem;
+	background-image: url(../img/chat.png);
+	background-size: 150%;
+	background-repeat: no-repeat;
+	background-position: center center;
+}
+
+.rounded-ubication-image-bck {
+	padding: 10rem;
+	background-image: url(../img/ubication.png);
+	background-size: 110%;
+	background-repeat: no-repeat;
+	background-position: center center;
+}
+
+.rounded-meet-image-bck {
+	padding: 10rem;
+	background-image: url(../img/meet.png);
+	background-size: 150%;
+	background-repeat: no-repeat;
+	background-position: center center;
+}
+
+
+/* MENU */
+
+.menu-item {
+	margin: 0px 15px;
+	padding: 10px 20px;
+	
+	font-size:18px;
+}
+
+.menu-item:hover {
+	color: #ffffff;
+	background-color: #CC4756;
+}
+
+/* SECTIONS */
+.body {
+    background-color: #E1E2E1;
+    color: #000000;
+}
+
+.navbar {
+    background-color: #4E171E;
+    color: #ffffff;
+}
+
+.navbar-nav button:hover {
+	background-color: #CC4756;
+}
+
+.navbar-collapse a {
+	font-size: 20px;
+    color: #FFFFFF !important;
+    text-decoration: none !important;
+}
+
+.navbar-collapse a:hover {
+	background-color: #CC4756 !important;
+}
+
+.navbar-title {
+    font-family: 'Caveat', cursive;
+    font-size: 6rem;
+    color: white;
+}
+
+.register-card-body {
+	margin: 0px 9px;
+	padding: 0px;
+	background-color: white;
+}
+
+#person-tab + .active {
+	border-radius: 1px !important;
+	border-width: 1px !important;
+	color: #000000;
+	font-weight: bolder;
+}
+
+#person-tab:not(.active){
+	border-color: #dee2e6 #dee2e6 #fff !important;
+	border-width: 0px 0px 1px 1px !important;
+	border-radius: 0px 0px 1px 1px !important;
+	color: #6C757D;
+	background-color: #F7F7F7;
+}
+
+#company-tab + .active {
+	border-radius: 1px !important;
+	border-width: 1px 1px 1px 1px !important;
+}
+
+#company-tab:not(.active) {
+	border-color: #dee2e6 #dee2e6 #fff !important;
+	border-width: 0px 1px 1px 0px !important;
+	border-radius: 0px 0px 1px 1px !important;
+	color: #6C757D;
+	background-color: #F7F7F7;
+}
+
+
+.i-menu {
+    font-size: 30px
+}
+
+/* BACKGROUND COLOR */
+.darkred-bkcolor {
+    background-color:#74001e;
+}
+
+.red-bkcolor {
+    background-color: #A93B47;
+}
+
+.lightgrey-bkcolor {
+    background-color: #F5F5F6;
+}
+
+/* COLOR */
+.darkred-color {
+    color:#74001e;
+}
+
+.red-color { 
+    color: #A93B47;
+}
+
+.white-color {
+    color: #FFFFFF;
+}
+
+/* ELEMS */
+
+.form {
+	font-size: 18px;
+}
+
+.errorForm {
+    color: #DC3545;
+    font-size: 16px;
+}
+
+.btn {
+    background-color: #A93B47;
+    color: #FFFFFF;
+}
+
+.btn-outline-secondary {
+    background-color: #E9ECEF;
+    color: #212529;
+    border-color: #CED4DA;
+    white-space: pre-wrap;
+}
+
+.btn-outline-secondary:hover {
+    background-color: #A93B47;
+    color: #FFFFFF;
+    border-color: #A93B47;
+}
+
+.btn-login {
+	font-size: 20px;
+}
+
+.btn-delete {
+	color:#FFFFFF;
+    background-color: #74001e;
+}
+
+.btn-delete:hover {
+	color:#FFFFFF;
+    background-color: #CC0035;
+}
+
+.btn-rate {
+    font-size: 18px;
+}
+
+/* UL */
+.ul {
+    list-style: none;
+}
+
+.li {
+    border-bottom: 1px solid #c2c2c3;
+    font-size: 20px;
+}
+
+.li-img {
+    border: 2px solid #c2c2c3;
+    border-radius: 800px;
+    overflow: hidden;
+}
+
+.span-lastmsg {
+    font-size: 16px;
+}
+
+.span-numMsg {
+    border-radius: 800px;
+    overflow: hidden;
+}
+
+.font-view {
+    font-size: 18px;
+}
+
+.bold {
+    font-weight: bold;
+}
+
+.parrafoInfo {
+    font-size: 20px;
+}
+
+.infoApp {
+    max-width: 80%;
+}
+
+.ol-parrafo {
+    padding: 0px;
+}
+
+.img {
+    border: 2px solid #c2c2c3;
+    border-radius: .25rem;
+}
+
+.aficion {
+    border-radius: 800px;
+    padding: 0px 10px;
+    color: #FFFFFF;
+    background-color: #A93B47;
+}
+
+.link-red {
+	color: #74001e;
+}
+
+.link-red:hover {
+	color:#A93B47;
+}
+
+.form-check-label {
+	font-size:16px;
+}
+
+.category {
+	font-size:17px;
+}
+
+.category:hover {
+	cursor:pointer;
+}
+
+/*
+input {
+	max-width: 350px;	
+}
+
+nav-item + a {
+	color: #A93B47;
+}
+
+nav-item, a:hover{
+	color: #74001e;
+}
+
+
+nav-item,a,.active {
+	color: #74001e;
+}
+*/
+
+form-group, label {
+	font-size:18px;
+}
+
+/* --- Puntuacion --- */
+.wrapper {
+    position: relative;
+    display: inline-block;
+    border: none;
+    font-size: 35px;
+    margin: 0px auto;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  
+  .wrapper input {
+    border: 0;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    position: absolute !important;
+    clip: rect(1px 1px 1px 1px);
+    clip: rect(1px, 1px, 1px, 1px);
+    opacity: 0;
+  }
+  
+  .wrapper label {
+    position: relative;
+    float: right;
+    color: #C8C8C8;
+  }
+  
+  .wrapper label:before {
+    margin: 5px;
+    content: "\f005";
+    font-family: FontAwesome;
+    display: inline-block;
+    font-size: 1.5em;
+    color: #ccc;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+  }
+  
+  .wrapper input:checked ~ label:before {
+    color: #FFC107;
+  }
+  
+  .wrapper label:hover ~ label:before {
+    color: #ffdb70;
+  }
+  
+  .wrapper label:hover:before {
+    color: #FFC107;
+  }
+  
+  /* focus */
+ textarea:focus,
+input[type="text"]:focus,
+input[type="password"]:focus,
+input[type="datetime"]:focus,
+input[type="datetime-local"]:focus,
+input[type="date"]:focus,
+input[type="month"]:focus,
+input[type="time"]:focus,
+input[type="week"]:focus,
+input[type="number"]:focus,
+input[type="email"]:focus,
+input[type="url"]:focus,
+input[type="search"]:focus,
+input[type="tel"]:focus,
+input[type="color"]:focus,
+textarea:focus,
+form-control:focus,
+btn:active,
+*.btn:active, .btn:focus, .btn:active:focus, .btn.active:focus
+a:focus,
+div:focus,
+.uneditable-input:focus {   
+  border-color: #A93B47 !important;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset, 0 0 8px #CC4756 !important;
+  outline: 0 none;
+}
