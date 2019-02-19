@@ -1,4 +1,124 @@
 
+$(() => {
+    //Button handlers
+    $("#generateBtn").click(generateGrid);
+});
+
+var grid = [];
+
+//Button handlers
+function generateGrid() {
+
+    let numRows = Number($("#rows").val());
+    let numCols = Number($("#columns").val());
+    let numberOfWalls = Number($("#walls").val());
+
+    if(numRows && numCols && numberOfWalls) {
+        let rowsCss = "";
+        let columnsCss = "";
+
+        for(let i=0; i < Number(numRows); i++) {
+            rowsCss += "1fr ";
+        }
+        rowsCss = rowsCss.trim();
+
+        for(let i=0; i < Number(numCols); i++) {
+            columnsCss += "1fr ";
+        }
+        columnsCss = columnsCss.trim();
+
+        $(".grid").css({
+            "grid-template-rows":       rowsCss,
+            "grid-template-columns":    columnsCss
+        });
+
+        //inicializacion de la matriz tanto en css como en js
+        for(let i=0; i < Number(numRows); i++) {
+            grid[i] = [];
+            for(let j=0; j < Number(numCols); j++) {
+                $(".grid").append("<div class='cell'></div>");
+                grid[i][j] = {};
+            }
+        }
+        $("#generatingForm").hide();
+        $("#gridContainer").show();
+
+        findPath(grid, numberOfWalls);
+    }
+};
+
+
+function drawStartNode(node) {
+    let gridJqElem = $(".grid");
+
+    let cell = gridJqElem.children(".cell").eq(getIndex(node.x, node.y));
+    cell.css({
+        "background-color": "blue"
+    });
+}
+
+function drawEndNode(node) {
+    let gridJqElem = $(".grid");
+
+    let cell = gridJqElem.children(".cell").eq(getIndex(node.x, node.y));
+    cell.css({
+        "background-color": "green"
+    });
+}
+
+
+function findPath(grid, numberOfWalls) {
+    let initX = $("#initNodeX").val();
+    let initY = $("#initNodeY").val();
+
+    let endX = $("#endNodeX").val();
+    let endY = $("#endNodeY").val();
+
+    if(initX && initY && endX && endY) {
+        let start = astar.newNode(initX, initY);
+        let end = astar.newNode(endX, endY);
+
+        let path = astar.search(grid, start, end, numberOfWalls);
+        draw(path);
+        drawStartNode(start);
+        drawEndNode(end);
+    }
+}
+
+function getIndex(row, col) {
+    return (grid[0].length * row + col);
+}
+
+function drawWalls() {
+    let gridJqElem = $(".grid");
+
+    for(var x = 0; x < grid.length; x++) {
+        for(var y = 0; y < grid[x].length; y++) {
+            if (grid[x][y].isWall) {
+                let cell = gridJqElem.children(".cell").eq(getIndex(x, y));
+                cell.css({
+                    "background-color": "red"
+                });
+            } 
+        }  
+    }
+}
+
+function draw(path) {
+    let gridJqElem = $(".grid");
+    $(".steps").text("The path took " + path.length + " steps");
+    
+    drawWalls();
+    for(let i = 0; i < path.length; ++i) {
+
+        let cell = gridJqElem.children(".cell").eq(getIndex(path[i].x, path[i].y));
+        cell.css({
+            "background-color": "black"
+        });
+    }
+
+}
+
 
 /* a-star algorithm */
 var astar = {
@@ -13,7 +133,8 @@ var astar = {
             visited : false,
             closed : false,
             debug : "",
-            parent : null
+            parent : null,
+            isWall : false
         }
     },
 
@@ -25,8 +146,30 @@ var astar = {
         }
     },
 
-    search: function(grid, start, end) {
+    generateRandomWalls : function(grid, numberOfWalls, start, end) {
+        let numberOfWallsPlaced = 0;
+        while (numberOfWallsPlaced < numberOfWalls) {
+
+            let row = Math.ceil(grid.length * Math.random());
+            let column = Math.ceil(grid[0].length * Math.random());
+
+            if (astar.checkRange(row, column, grid) && 
+                !grid[row][column].isWall && 
+                row != start.x &&
+                column != start.y && 
+                row != end.x && 
+                column != end.y) {
+
+                grid[row][column].isWall = true;
+                ++numberOfWallsPlaced;
+            }
+            
+        }
+    },
+
+    search: function(grid, start, end, numberOfWalls) {
         astar.init(grid);
+        astar.generateRandomWalls(grid, numberOfWalls, start, end);
 
         var openList   = [];
         openList.push(start);
@@ -59,7 +202,7 @@ var astar = {
             for(var i=0; i<neighbors.length;i++) {
                 var neighbor = neighbors[i];
 
-                if(neighbor.closed ) {//|| neighbor.isWall()) {
+                if(neighbor.closed || neighbor.isWall) {
                     // not a valid node to process, skip to next neighbor
                     continue;
                 }
@@ -157,95 +300,3 @@ var astar = {
         return ret;
     }
   };
-
-
-
-
-$(() => {
-
-    //Button handlers
-    $("#generateBtn").click(generateGrid);
-    
-    
-});
-
-var grid = [];
-
-//Button handlers
-function generateGrid() {
-
-    let numRows = $("#rows").val();
-    let numCols = $("#columns").val();
-
-    if(numRows && numCols) {
-        let rowsCss = "";
-        let columnsCss = "";
-
-        for(let i=0; i < Number(numRows); i++) {
-            rowsCss += "1fr ";
-        }
-        rowsCss = rowsCss.trim();
-
-        for(let i=0; i < Number(numCols); i++) {
-            columnsCss += "1fr ";
-        }
-        columnsCss = columnsCss.trim();
-
-        $(".grid").css({
-            "grid-template-rows":       rowsCss,
-            "grid-template-columns":    columnsCss
-        });
-
-        //inicializacion de la matriz tanto en css como en js
-        for(let i=0; i < Number(numRows); i++) {
-            grid[i] = [];
-            for(let j=0; j < Number(numCols); j++) {
-                $(".grid").append("<div class='cell'></div>");
-                grid[i][j] = {};
-            }
-        }
-    }
-    else {
-
-    }
-
-    $("#generatingForm").hide();
-    $("#gridContainer").show();
-
-    findPath(grid);
-};
-
-function findPath(grid) {
-    let initX = $("#initNodeX").val();
-    let initY = $("#initNodeY").val();
-
-    let endX = $("#endNodeX").val();
-    let endY = $("#endNodeY").val();
-
-    if(initX && initY && endX && endY) {
-        let start = astar.newNode(initX, initY);
-        let end = astar.newNode(endX, endY);
-        let path = astar.search(grid, start, end);
-        draw(path);
-    }
-    else {
-
-    }
-}
-
-function getIndex(row, col) {
-    return (grid[0].length * row + col);
-}
-
-function draw(path) {
-    let gridJqElem = $(".grid");
-
-    for(let i = 0; i < path.length; ++i) {
-        let cell = gridJqElem.children(".cell").eq(getIndex(path[i].x, path[i].y));
-        cell.css({
-            "background-color": "red"
-        });
-    }
-
-}
-

@@ -44,6 +44,16 @@
                             <div class="invalid-feedback"></div>
                         </div>
                     </div>
+
+                    <div class="form-group">
+                        <label for="columns">Number of walls</label>
+                        <div>
+                            <input type="number" class="form-control" id="walls" name="walls">
+                            <div class="invalid-feedback"></div>
+                        </div>
+                    </div>
+
+
                     <div class="form-group">
                         <label for="columns">Initial node</label>
                         <div class="row d-flex flex-row flex-nowrap">
@@ -58,19 +68,19 @@
                         </div>
                     </div>
                     <div class="form-group">
-                            <label for="columns">End node</label>
-                            <div class="row d-flex flex-row flex-nowrap">
-                                <label for="endNodeX" class="col-3">X</label>
-                                <input type="number" class="col-8 form-control" id="endNodeX" name="endNodeX"></input>
-                                <div class="invalid-feedback"></div>
-                            </div>
-                            <div class="row d-flex flex-row flex-nowrap">
-                                <label for="endNodeY" class="col-3">Y</label>
-                                <input type="number" class="col-8 form-control" id="endNodeY" name="endNodeY"></input>
-                                <div class="invalid-feedback"></div>
-                            </div>
+                        <label for="columns">End node</label>
+                        <div class="row d-flex flex-row flex-nowrap">
+                            <label for="endNodeX" class="col-3">X</label>
+                            <input type="number" class="col-8 form-control" id="endNodeX" name="endNodeX"></input>
+                            <div class="invalid-feedback"></div>
                         </div>
-                    
+                        <div class="row d-flex flex-row flex-nowrap">
+                            <label for="endNodeY" class="col-3">Y</label>
+                            <input type="number" class="col-8 form-control" id="endNodeY" name="endNodeY"></input>
+                            <div class="invalid-feedback"></div>
+                        </div>
+                    </div>
+
                     <button type="submit" id="generateBtn" class="btn btn-block">
                         Generate
                     </button>
@@ -81,6 +91,7 @@
 
         </div>
 
+        <label for="gridContainer" class="steps"></label>
         <div class="row" id="gridContainer" class="">
             <div class="grid mx-auto">
 
