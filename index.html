@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/grid.css">
     <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/fontawesome-free-5.7.2-web/css/all.css">
     <script src="js/jquery-3.3.1.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
     <script src="js/grid.js"></script>
@@ -15,19 +16,23 @@
     <title>Proyecto IC</title>
 </head>
 
-<body style="background-color: #f5f5f5">
+<body>
 
-	<div class="container">
+<div class="container-fluid px-0">
 
-        <div class="row d-flex flex-row flex-nowrap my-3">
-            <h2>Práctica 1 : IC</h2>
+    <div class="row header">
+        <div class="mx-auto d-flex flex-row flex-nowrap align-items-center">
+            <img src="img/logo.png" class="logo">
+            <span class="logo-text ml-4">Práctica 1 - IC</span>
         </div>
-        
+    </div>
+    
+    <div class="container">
         <div class="row mx-0 mt-4">
 
             <div id="generatingForm" class="card px-0 col-3 form mx-auto my-auto card">
                 <div class="card-header text-center">
-                    <h2 class="m-0">A-Star algorithm</h2>
+                    <h2 class="m-0">A-Star</h2>
                 </div>
                 <div class="card-body px-5">
                     <div class="form-group">
@@ -81,24 +86,36 @@
                         </div>
                     </div>
 
-                    <button type="submit" id="generateBtn" class="btn btn-block">
-                        Generate
-                    </button>
+                    <button id="generateBtn" class="btn btn-block">Generate</button>
                     
                 </div>
                 
             </div>
 
-        </div>
+            <div class="card col px-0">
+                <div class="card-header">
+                    <span class="steps"></span>
+                </div>
+                <div class="card-body">
+                    <div class="row" id="gridContainer">
+                        <div class="grid mx-auto">
 
-        <label for="gridContainer" class="steps"></label>
-        <div class="row" id="gridContainer" class="">
-            <div class="grid mx-auto">
-
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card-footer d-flex flex-row justify-content-around">
+                    <button id="generateBtn" class="btn mx-2">Add Waypoints<i class="fas fa-thumbtack ml-2"></i></button>
+                    <button id="generateBtn" class="btn mx-2">Add Dangerpoints<i class="fas fa-skull ml-2"></i></button>
+                </div>
+                
             </div>
-        </div>
 
+        </div>
     </div>
+    
+
+</div>
     
 </body>
 </html>

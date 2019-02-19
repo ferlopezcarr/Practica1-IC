@@ -40,7 +40,7 @@ function generateGrid() {
                 grid[i][j] = {};
             }
         }
-        $("#generatingForm").hide();
+        //$("#generatingForm").hide();
         $("#gridContainer").show();
 
         findPath(grid, numberOfWalls);
