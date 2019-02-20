@@ -14,6 +14,10 @@ function generateGrid() {
     let numberOfWalls = Number($("#walls").val());
 
     if(numRows && numCols && numberOfWalls) {
+        $("#rows").removeClass("is-invalid");
+        $("#columns").removeClass("is-invalid");
+        $("#walss").removeClass("is-invalid");
+
         let rowsCss = "";
         let columnsCss = "";
 
@@ -44,6 +48,13 @@ function generateGrid() {
         $("#gridContainer").show();
 
         findPath(grid, numberOfWalls);
+    } else {
+        if(!numRows) {
+            $("#rows").addClass("is-invalid");
+            $("#columns").addClass("is-invalid");
+            $("#walss").addClass("is-invalid");
+            
+        }
     }
 };
 
@@ -110,7 +121,7 @@ function draw(path) {
     
     drawWalls();
     for(let i = 0; i < path.length; ++i) {
-
+        setTimeout(5000);
         let cell = gridJqElem.children(".cell").eq(getIndex(path[i].x, path[i].y));
         cell.css({
             "background-color": "black"
