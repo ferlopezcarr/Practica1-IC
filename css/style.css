@@ -207,6 +207,10 @@
     font-size: 18px;
 }
 
+#findPathBtn {
+    background-color: #E00024; 
+}
+
 /* UL */
 .ul {
     list-style: none;
