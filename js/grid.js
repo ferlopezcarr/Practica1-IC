@@ -13,11 +13,11 @@ $(() => {
 
 
 function getRow(numberOfTheCell) {
-    return Math.floor(numberOfTheCell / 10);
+    return Math.floor(numberOfTheCell / grid[0].length);
 }
 
 function getColumn(numberOfTheCell) {
-    return numberOfTheCell % 10;
+    return numberOfTheCell % grid[0].length;
 }
 
 function cellPressedHandler(event) {
@@ -25,6 +25,7 @@ function cellPressedHandler(event) {
     let column = Number(getColumn($(this).index()));
     let cell = $(".grid").children(".cell").eq(getIndex(row, column));
 
+    console.log("Row: " + row + " Column: " + column);
     if (!start) { 
         start = {x : row, y : column};
         drawStartNode();
@@ -53,11 +54,11 @@ function generateGrid() {
     let numberOfWalls = Number($("#walls").val());
     start = undefined;
     end = undefined;
-    
+
     if(numRows && numCols && numberOfWalls) {
         $("#rows").removeClass("is-invalid");
         $("#columns").removeClass("is-invalid");
-        $("#walss").removeClass("is-invalid");
+        $("#walls").removeClass("is-invalid");
 
         let rowsCss = "";
         let columnsCss = "";
@@ -88,10 +89,7 @@ function generateGrid() {
         }
         //$("#generatingForm").hide();
         $("#gridContainer").show();
-
-        let start = {x : 0, y : 0};
-        let end = {x : 9, y : 9};
-
+        
         astar.init();
         astar.generateRandomWalls(numberOfWalls, start, end);
         drawWalls();
@@ -169,7 +167,17 @@ function drawWalls() {
 
 function draw(path) {
     let gridJqElem = $(".grid");
-    $(".info").text("The path took " + path.length + " steps");
+    let textInfo = "";
+
+    $(".info").empty();
+
+    if (path.length == 0) {
+        textInfo = "<span style='color: #E00024'>The path is unreachable</span>";
+    } else {
+        textInfo = "The path took " + path.length + " steps";
+    }
+    $(".info").append(textInfo);
+    //$(".info").text(textInfo);
     
     for(let i = 0; i < path.length - 1; ++i) {
         let cell = gridJqElem.children(".cell").eq(getIndex(path[i].x, path[i].y));
@@ -182,8 +190,8 @@ function draw(path) {
         cell.append("<img src='img/huella.jpg' height='"+height+"px' width='"+width+"px'>");
     }
 
-    start = undefined;
-    end = undefined;
+    //start = undefined;
+    //end = undefined;
     $("#findPathBtn").prop("disabled", true);
 }
 
@@ -223,9 +231,7 @@ var astar = {
             let column = Math.floor(grid[0].length * Math.random());
 
             if (astar.checkRange(row, column) && 
-                !grid[row][column].isWall && 
-                (row != start.x || column != start.y) &&
-                (row != end.x || column != end.y)){
+                !grid[row][column].isWall){
 
                     grid[row][column].isWall = true;
                     ++numberOfWallsPlaced;
