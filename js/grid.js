@@ -31,6 +31,7 @@ function generateGrid() {
         }
         columnsCss = columnsCss.trim();
 
+        $(".grid").empty();
         $(".grid").css({
             "grid-template-rows":       rowsCss,
             "grid-template-columns":    columnsCss
