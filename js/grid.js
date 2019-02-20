@@ -6,6 +6,7 @@ let end;
 $(() => {
     $("#generateBtn").click(generateGrid);
     $("#findPathBtn").click(findPathButtonHandler);
+    $("#cleanGridBtn").click(cleanGridButtonHandler);
     $(".grid").on("click", ".cell", cellPressedHandler);
 });
 
@@ -18,7 +19,6 @@ function getRow(numberOfTheCell) {
 function getColumn(numberOfTheCell) {
     return numberOfTheCell % grid[0].length;
 }
-
 
 function cellPressedHandler(event) {
     let row = Number(getRow($(this).index()));
@@ -41,6 +41,16 @@ function cellPressedHandler(event) {
 }
 
 //Button handlers
+
+function cleanGridButtonHandler() {
+    $(".grid").children(".cell").empty();
+    for(let i = 0; i < grid.length; ++i) {
+        for (let j = 0; j < grid[0].length; ++j) {
+            grid[i][j].isWall = false;
+        }
+    }
+}
+
 
 function findPathButtonHandler() {
     findPath();
@@ -93,6 +103,9 @@ function generateGrid() {
         astar.generateRandomWalls(numberOfWalls, start, end);
         drawWalls();
         $(".info").text("Push over a cell to indicate the starting point");
+
+        $("#findPathBtn").prop("disabled", true);
+        $("#cleanGridBtn").prop("disabled", false);
     } else {
         if(!numRows) {
             $("#rows").addClass("is-invalid");
@@ -186,7 +199,7 @@ function draw(path) {
         height = height*0.6;
         width = width*0.6;
         
-        
+
         if (path[i + 1].x == path[i].x + 1 && path[i + 1].y == path[i].y + 1 ) { //Down and right
             cell.append("<img src='img/huella-abajo-derecha.jpg' height='"+height+"px' width='"+width+"px'>");
         } else if (path[i + 1].x == path[i].x + 1 && path[i + 1].y == path[i].y - 1) { //Down and left
