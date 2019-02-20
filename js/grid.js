@@ -64,18 +64,27 @@ function drawStartNode(node) {
     let gridJqElem = $(".grid");
 
     let cell = gridJqElem.children(".cell").eq(getIndex(node.x, node.y));
-    cell.css({
-        "background-color": "blue"
-    });
+    let height = cell.css("height");
+    let width = cell.css("width");
+    height = Number(height.slice(0, height.length-2));
+    width = Number(width.slice(0, width.length-2));
+    height = height*0.95;
+    width = width*0.95;
+    cell.append("<img src='img/jerry-esperando.png' height='"+height+"px' width='"+width+"px'>");
 }
 
 function drawEndNode(node) {
     let gridJqElem = $(".grid");
 
     let cell = gridJqElem.children(".cell").eq(getIndex(node.x, node.y));
-    cell.css({
-        "background-color": "green"
-    });
+    cell.empty();
+    let height = cell.css("height");
+    let width = cell.css("width");
+    height = Number(height.slice(0, height.length-2));
+    width = Number(width.slice(0, width.length-2));
+    height = height*0.8;
+    width = width*0.8;
+    cell.append("<img src='img/agujero.png' height='"+height+"px' width='"+width+"px'>");
 }
 
 
@@ -108,9 +117,13 @@ function drawWalls() {
         for(var y = 0; y < grid[x].length; y++) {
             if (grid[x][y].isWall) {
                 let cell = gridJqElem.children(".cell").eq(getIndex(x, y));
-                cell.css({
-                    "background-color": "red"
-                });
+                let height = cell.css("height");
+                let width = cell.css("width");
+                height = Number(height.slice(0, height.length-2));
+                width = Number(width.slice(0, width.length-2));
+                height = height*0.8;
+                width = width*0.8;
+                cell.append("<img src='img/trampa.jpg' height='"+height+"px' width='"+width+"px'>");
             } 
         }  
     }
@@ -124,9 +137,13 @@ function draw(path) {
     for(let i = 0; i < path.length; ++i) {
         setTimeout(5000);
         let cell = gridJqElem.children(".cell").eq(getIndex(path[i].x, path[i].y));
-        cell.css({
-            "background-color": "black"
-        });
+        let height = cell.css("height");
+        let width = cell.css("width");
+        height = Number(height.slice(0, height.length-2));
+        width = Number(width.slice(0, width.length-2));
+        height = height*0.6;
+        width = width*0.6;
+        cell.append("<img src='img/huella.jpg' height='"+height+"px' width='"+width+"px'>");
     }
 
 }
@@ -160,6 +177,7 @@ var astar = {
 
     generateRandomWalls : function(grid, numberOfWalls, start, end) {
         let numberOfWallsPlaced = 0;
+        let cont = 0;
         while (numberOfWallsPlaced < numberOfWalls) {
 
             let row = Math.ceil(grid.length * Math.random());
@@ -175,7 +193,8 @@ var astar = {
                 grid[row][column].isWall = true;
                 ++numberOfWallsPlaced;
             }
-            
+            cont++;
+            console.log(cont);
         }
     },
 
