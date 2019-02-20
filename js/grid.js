@@ -1,10 +1,37 @@
+let grid = [];
+let start;
+let end;
+
 
 $(() => {
     //Button handlers
     $("#generateBtn").click(generateGrid);
+    $(".grid").on("click", ".cell", cellPressedHandler);
 });
 
-var grid = [];
+
+
+function getRow(numberOfTheCell) {
+    return Math.floor(numberOfTheCell / 10);
+}
+
+function getColumn(numberOfTheCell) {
+    return numberOfTheCell % 10;
+}
+
+function cellPressedHandler(event) {
+    let row = Number(getRow($(this).index()));
+    let column = Number(getColumn($(this).index()));
+
+    if (!start) { 
+        start = {x : row, y : column};
+        $(".info").text("Push over a cell to indicate the end point");
+    } else if (!end) { 
+        end = {x : row, y : column};
+    } else if (row != start.x && row != end.x && column != start.y && column != end.y){ 
+        
+    }
+}
 
 //Button handlers
 function generateGrid() {
@@ -48,7 +75,18 @@ function generateGrid() {
         //$("#generatingForm").hide();
         $("#gridContainer").show();
 
-        findPath(grid, numberOfWalls);
+        let start = {x : 0, y : 0};
+        let end = {x : 9, y : 9};
+
+        astar.init();
+        astar.generateRandomWalls(numberOfWalls, start, end);
+        
+        drawWalls();
+
+        $(".info").text("Push over a cell to indicate the starting point");
+        //drawStartNode(start);
+        //drawEndNode(end);
+        //findPath(grid, numberOfWalls);
     } else {
         if(!numRows) {
             $("#rows").addClass("is-invalid");
@@ -88,21 +126,14 @@ function drawEndNode(node) {
 }
 
 
-function findPath(grid, numberOfWalls) {
-    let initX = $("#initNodeX").val();
-    let initY = $("#initNodeY").val();
-
-    let endX = $("#endNodeX").val();
-    let endY = $("#endNodeY").val();
+function findPath(numberOfWalls) {
 
     if(initX && initY && endX && endY) {
         let start = astar.newNode(initX, initY);
         let end = astar.newNode(endX, endY);
 
-        let path = astar.search(grid, start, end, numberOfWalls);
-        draw(path);
-        drawStartNode(start);
-        drawEndNode(end);
+        let path = astar.search(start, end, numberOfWalls);
+        
     }
 }
 
@@ -131,11 +162,10 @@ function drawWalls() {
 
 function draw(path) {
     let gridJqElem = $(".grid");
-    $(".steps").text("The path took " + path.length + " steps");
+    $(".info").text("The path took " + path.length + " steps");
     
     drawWalls();
     for(let i = 0; i < path.length; ++i) {
-        setTimeout(5000);
         let cell = gridJqElem.children(".cell").eq(getIndex(path[i].x, path[i].y));
         let height = cell.css("height");
         let width = cell.css("width");
@@ -145,13 +175,11 @@ function draw(path) {
         width = width*0.6;
         cell.append("<img src='img/huella.jpg' height='"+height+"px' width='"+width+"px'>");
     }
-
 }
 
 
 /* a-star algorithm */
 var astar = {
-
     newNode: function(x,y) {
         return {
             x : Number(x),
@@ -167,7 +195,7 @@ var astar = {
         }
     },
 
-    init: function(grid) {
+    init: function() {
         for(var x = 0; x < grid.length; x++) {
             for(var y = 0; y < grid[x].length; y++) {
                 grid[x][y] = astar.newNode(x, y);
@@ -175,32 +203,28 @@ var astar = {
         }
     },
 
-    generateRandomWalls : function(grid, numberOfWalls, start, end) {
+    generateRandomWalls : function(numberOfWalls, start, end) {
         let numberOfWallsPlaced = 0;
-        let cont = 0;
+        numberOfWalls = Math.min(grid.length * grid[0].length - 2, numberOfWalls);
         while (numberOfWallsPlaced < numberOfWalls) {
 
-            let row = Math.ceil(grid.length * Math.random());
-            let column = Math.ceil(grid[0].length * Math.random());
+            let row = Math.floor(grid.length * Math.random());
+            let column = Math.floor(grid[0].length * Math.random());
 
-            if (astar.checkRange(row, column, grid) && 
+            if (astar.checkRange(row, column) && 
                 !grid[row][column].isWall && 
-                row != start.x &&
-                column != start.y && 
-                row != end.x && 
-                column != end.y) {
+                (row != start.x || column != start.y) &&
+                (row != end.x || column != end.y)){
 
-                grid[row][column].isWall = true;
-                ++numberOfWallsPlaced;
-            }
-            cont++;
-            console.log(cont);
+                    grid[row][column].isWall = true;
+                    ++numberOfWallsPlaced;
+            }            
         }
     },
 
-    search: function(grid, start, end, numberOfWalls) {
-        astar.init(grid);
-        astar.generateRandomWalls(grid, numberOfWalls, start, end);
+    search: function(start, end, numberOfWalls) {
+        astar.init();
+        astar.generateRandomWalls(numberOfWalls, start, end);
 
         var openList   = [];
         openList.push(start);
@@ -229,7 +253,7 @@ var astar = {
             openList.splice(lowInd, 1);
             currentNode.closed = true;
 
-            var neighbors = astar.neighbors(grid, currentNode);
+            var neighbors = astar.neighbors(currentNode);
             for(var i=0; i<neighbors.length;i++) {
                 var neighbor = neighbors[i];
 
@@ -278,11 +302,11 @@ var astar = {
         return Math.sqrt(d1 + d2);
     },
 
-    checkRange: function(row, column, grid) {
+    checkRange: function(row, column) {
         return row >= 0 && row < grid.length && column >= 0 && column < grid[0].length;
     },
 
-    neighbors: function(grid, node) {
+    neighbors: function(node) {
         var ret = [];
         var x = Number(node.x);
         var y = Number(node.y);
