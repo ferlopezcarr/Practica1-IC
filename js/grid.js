@@ -22,14 +22,19 @@ function getColumn(numberOfTheCell) {
 function cellPressedHandler(event) {
     let row = Number(getRow($(this).index()));
     let column = Number(getColumn($(this).index()));
+    let cell = $(".grid").children(".cell").eq(getIndex(row, column));
 
     if (!start) { 
         start = {x : row, y : column};
+        drawStartNode();
         $(".info").text("Push over a cell to indicate the end point");
     } else if (!end) { 
         end = {x : row, y : column};
+        drawEndNode();
+        $(".info").text("Push over any cell to create a new wall");
     } else if (row != start.x && row != end.x && column != start.y && column != end.y){ 
-        
+        grid[row][column].isWall = true;
+        drawWall(row, column);
     }
 }
 
@@ -98,10 +103,10 @@ function generateGrid() {
 };
 
 
-function drawStartNode(node) {
+function drawStartNode() {
     let gridJqElem = $(".grid");
 
-    let cell = gridJqElem.children(".cell").eq(getIndex(node.x, node.y));
+    let cell = gridJqElem.children(".cell").eq(getIndex(start.x, start.y));
     let height = cell.css("height");
     let width = cell.css("width");
     height = Number(height.slice(0, height.length-2));
@@ -111,10 +116,10 @@ function drawStartNode(node) {
     cell.append("<img src='img/jerry-esperando.png' height='"+height+"px' width='"+width+"px'>");
 }
 
-function drawEndNode(node) {
+function drawEndNode() {
     let gridJqElem = $(".grid");
 
-    let cell = gridJqElem.children(".cell").eq(getIndex(node.x, node.y));
+    let cell = gridJqElem.children(".cell").eq(getIndex(end.x, end.y));
     cell.empty();
     let height = cell.css("height");
     let width = cell.css("width");
@@ -141,20 +146,27 @@ function getIndex(row, col) {
     return (grid[0].length * row + col);
 }
 
-function drawWalls() {
+
+
+function drawWall(x, y) {
     let gridJqElem = $(".grid");
+    let cell = gridJqElem.children(".cell").eq(getIndex(x, y));
+    let height = cell.css("height");
+    let width = cell.css("width");
+    height = Number(height.slice(0, height.length-2));
+    width = Number(width.slice(0, width.length-2));
+    height = height*0.8;
+    width = width*0.8;
+    cell.append("<img src='img/trampa.jpg' height='"+height+"px' width='"+width+"px'>");
+}
+
+function drawWalls() {
+    
 
     for(var x = 0; x < grid.length; x++) {
         for(var y = 0; y < grid[x].length; y++) {
             if (grid[x][y].isWall) {
-                let cell = gridJqElem.children(".cell").eq(getIndex(x, y));
-                let height = cell.css("height");
-                let width = cell.css("width");
-                height = Number(height.slice(0, height.length-2));
-                width = Number(width.slice(0, width.length-2));
-                height = height*0.8;
-                width = width*0.8;
-                cell.append("<img src='img/trampa.jpg' height='"+height+"px' width='"+width+"px'>");
+                drawWall(x, y);
             } 
         }  
     }
@@ -206,6 +218,7 @@ var astar = {
     generateRandomWalls : function(numberOfWalls, start, end) {
         let numberOfWallsPlaced = 0;
         numberOfWalls = Math.min(grid.length * grid[0].length - 2, numberOfWalls);
+
         while (numberOfWallsPlaced < numberOfWalls) {
 
             let row = Math.floor(grid.length * Math.random());
@@ -220,6 +233,7 @@ var astar = {
                     ++numberOfWallsPlaced;
             }            
         }
+        console.log("Walls generated : " + numberOfWallsPlaced);
     },
 
     search: function(start, end, numberOfWalls) {
