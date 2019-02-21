@@ -1,6 +1,7 @@
 let grid = [];
 let start;
 let end;
+let k = 0;
 
 
 $(() => {
@@ -26,14 +27,18 @@ function cellPressedHandler(event) {
     let cell = $(".grid").children(".cell").eq(getIndex(row, column));
 
     if (!start) { 
-        start = {x : row, y : column};
-        drawStartNode();
-        $(".info").text("Push over a cell to indicate the end point");
-    } else if (!end) { 
-        end = {x : row, y : column};
-        drawEndNode();
-        $(".info").text("Push over any cell to create a new wall");
-        $("#findPathBtn").prop("disabled", false);
+        if (!grid[row][column].isWall) {
+            start = {x : row, y : column};
+            drawStartNode();
+            $(".info").text("Push over a cell to indicate the end point");
+        }
+    } else if (!end && !grid[row][column].isWall) { 
+        if (!grid[row][column].isWall) {
+            end = {x : row, y : column};
+            drawEndNode();
+            $(".info").text("Push over any cell to create a new wall");
+            $("#findPathBtn").prop("disabled", false);
+        }
     } else if ((row != start.x || column != start.y) && (row != end.x || column != end.y) && !grid[row][column].isWall){ 
         grid[row][column].isWall = true;
         drawWall(row, column);
@@ -176,9 +181,51 @@ function drawWalls() {
     }
 }
 
+
+function appendHuellas(cell, path) {
+    let gridJqElem = $(".grid");
+    let height = cell.css("height");
+    let width = cell.css("width");
+    height = Number(height.slice(0, height.length-2));
+    width = Number(width.slice(0, width.length-2));
+    height = height*0.6;
+    width = width*0.6;
+
+
+    if (path[k + 1].x == path[k].x + 1 && path[k + 1].y == path[k].y + 1 ) { //Down and right
+        cell.append("<img class='huella' src='img/huella-abajo-derecha.jpg' height='"+height+"px' width='"+width+"px'>");
+    } else if (path[k + 1].x == path[k].x + 1 && path[k + 1].y == path[k].y - 1) { //Down and left
+        cell.append("<img class='huella' src='img/huella-abajo-izquierda.jpg' height='"+height+"px' width='"+width+"px'>");
+    } else if (path[k + 1].x == path[k].x - 1 && path[k + 1].y == path[k].y + 1) { //Up and right
+        cell.append("<img class='huella' src='img/huella-arriba-izquierda.jpg' height='"+height+"px' width='"+width+"px'>");
+    } else if (path[k + 1].x == path[k].x - 1 && path[k + 1].y == path[k].y - 1) { //Up and left
+        cell.append("<img class='huella' src='img/huella-arriba-izquierda.jpg' height='"+height+"px' width='"+width+"px'>");
+    } else if (path[k + 1].x == path[k].x + 1){ // Down
+        cell.append("<img class='huella' src='img/huella-abajo.jpg' height='"+height+"px' width='"+width+"px'>");
+    } else if (path[k + 1].x == path[k].x - 1) { // Up
+        cell.append("<img class='huella' src='img/huella-arriba.jpg' height='"+height+"px' width='"+width+"px'>");
+    } else if (path[k + 1].y == path[k].y - 1) { // Left
+        cell.append("<img class='huella' src='img/huella-izquierda.jpg' height='"+height+"px' width='"+width+"px'>");
+    } else if (path[k + 1].y == path[k].y + 1) { // Right
+        cell.append("<img class='huella' src='img/huella-derecha.jpg' height='"+height+"px' width='"+width+"px'>");
+    }
+
+
+    if (k < path.length - 2) {
+        ++k;
+        cell = gridJqElem.children(".cell").eq(getIndex(path[k].x, path[k].y));
+        setTimeout(() => {
+            appendHuellas(cell, path)
+        }, 1000);
+    } else {
+        k = 0;
+    }
+}
+
 function draw(path) {
     let gridJqElem = $(".grid");
     let textInfo = "";
+    let cell;
 
     $(".info").empty();
 
@@ -186,42 +233,14 @@ function draw(path) {
         textInfo = "<span style='color: #E00024'>The end point is unreachable</span>";
     } else {
         textInfo = "The path took " + path.length + " steps";
+        cell = gridJqElem.children(".cell").eq(getIndex(path[k].x, path[k].y));
+        appendHuellas(cell, path);
     }
 
     $(".info").append(textInfo);
-    
-    for(let i = 0; i < path.length - 1; ++i) {
-        let cell = gridJqElem.children(".cell").eq(getIndex(path[i].x, path[i].y));
-        let height = cell.css("height");
-        let width = cell.css("width");
-        height = Number(height.slice(0, height.length-2));
-        width = Number(width.slice(0, width.length-2));
-        height = height*0.6;
-        width = width*0.6;
-        
-
-        if (path[i + 1].x == path[i].x + 1 && path[i + 1].y == path[i].y + 1 ) { //Down and right
-            cell.append("<img src='img/huella-abajo-derecha.jpg' height='"+height+"px' width='"+width+"px'>");
-        } else if (path[i + 1].x == path[i].x + 1 && path[i + 1].y == path[i].y - 1) { //Down and left
-            cell.append("<img src='img/huella-abajo-izquierda.jpg' height='"+height+"px' width='"+width+"px'>");
-        } else if (path[i + 1].x == path[i].x - 1 && path[i + 1].y == path[i].y + 1) { //Up and right
-            cell.append("<img src='img/huella-arriba-izquierda.jpg' height='"+height+"px' width='"+width+"px'>");
-        } else if (path[i + 1].x == path[i].x - 1 && path[i + 1].y == path[i].y - 1) { //Up and left
-            cell.append("<img src='img/huella-arriba-izquierda.jpg' height='"+height+"px' width='"+width+"px'>");
-        } else if (path[i + 1].x == path[i].x + 1){ // Down
-            cell.append("<img src='img/huella-abajo.jpg' height='"+height+"px' width='"+width+"px'>");
-        } else if (path[i + 1].x == path[i].x - 1) { // Up
-            cell.append("<img src='img/huella-arriba.jpg' height='"+height+"px' width='"+width+"px'>");
-        } else if (path[i + 1].y == path[i].y - 1) { // Left
-            cell.append("<img src='img/huella-izquierda.jpg' height='"+height+"px' width='"+width+"px'>");
-        } else if (path[i + 1].y == path[i].y + 1) { // Right
-            cell.append("<img src='img/huella-derecha.jpg' height='"+height+"px' width='"+width+"px'>");
-        }
-        
-        //sleep(500);
-    }
 
     $("#findPathBtn").prop("disabled", true);
+   
 }
 
 function sleep(milliseconds) {
