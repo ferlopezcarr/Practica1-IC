@@ -17,4 +17,6 @@
     display:flex;
     justify-content: center;
     align-items: center;
+    background-image: url("../img/suelo.jpg");
+    background-size: cover;
 }

@@ -168,7 +168,8 @@ function drawWall(x, y) {
     width = Number(width.slice(0, width.length-2));
     height = height*0.8;
     width = width*0.8;
-    cell.append("<img src='img/trampa.jpg' height='"+height+"px' width='"+width+"px'>");
+    cell.append("<img src='img/trampa.png' height='"+height+"px' width='"+width+"px'>");
+    cell.css({ "background-color" : "#ECDFBD"});
 }
 
 function drawWalls() {
