@@ -197,7 +197,7 @@ function appendHuellas(cell, path) {
     } else if (path[k + 1].x == path[k].x + 1 && path[k + 1].y == path[k].y - 1) { //Down and left
         cell.append("<img class='huella' src='img/huella-abajo-izquierda.jpg' height='"+height+"px' width='"+width+"px'>");
     } else if (path[k + 1].x == path[k].x - 1 && path[k + 1].y == path[k].y + 1) { //Up and right
-        cell.append("<img class='huella' src='img/huella-arriba-izquierda.jpg' height='"+height+"px' width='"+width+"px'>");
+        cell.append("<img class='huella' src='img/huella-arriba-derecha.jpg' height='"+height+"px' width='"+width+"px'>");
     } else if (path[k + 1].x == path[k].x - 1 && path[k + 1].y == path[k].y - 1) { //Up and left
         cell.append("<img class='huella' src='img/huella-arriba-izquierda.jpg' height='"+height+"px' width='"+width+"px'>");
     } else if (path[k + 1].x == path[k].x + 1){ // Down
