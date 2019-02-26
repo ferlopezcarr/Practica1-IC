@@ -36,14 +36,14 @@
             </div>
             <div class="card-body px-5">
                 <div class="form-group">
-                    <label for="rows">Number of rows</label>
+                    <label for="rows">Rows</label>
                     <div>
                         <input type="number" class="form-control is-invalid" id="rows" name="rows" min="1" max="300" value="5">
                         <div id="rowsInvalid" class="invalid-feedback"></div>
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="columns">Number of columns</label>
+                    <label for="columns">Columns</label>
                     <div>
                         <input type="number" class="form-control" id="columns" name="columns" min="1" max="300" value="5">
                         <div id="columnInvalid" class="invalid-feedback"></div>
@@ -51,7 +51,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="columns">Number of walls</label>
+                    <label for="columns">Walls</label>
                     <div>
                         <input type="number" class="form-control" id="walls" name="walls" aria-describedby="wallsHelp" min="0" max="300" value="5">
                         <small id="wallsHelp" class="form-text text-muted text-justify">
@@ -70,12 +70,16 @@
                         <img src='img/huella-arriba-izquierda.png' height="40px" width="40px">
                     </div>
                     <div class="d-flex flex-row justify-content-around align-items-center">
+                        <span>Waypoint node</span>
+                        <img src='img/queso.png' height="40px" width="40px">
+                    </div>
+                    <div class="d-flex flex-row justify-content-around align-items-center">
                         <span>Wall node</span>
                         <img src='img/trampa.png' height="50px" width="50px">
                     </div>
                     <div class="d-flex flex-row justify-content-around align-items-center">
                         <span>End node</span>
-                        <img src='img/agujero.png' height="50px" width="50px">
+                        <img src='img/agujero-roto.png' height="50px" width="50px">
                     </div>
                 </div>
 
@@ -106,7 +110,7 @@
             </div>
             
             <div class="card-footer d-flex flex-row justify-content-around">
-                <button id="generateBtn" class="btn mx-2">Add Waypoints<i class="fas fa-thumbtack ml-2"></i></button>
+                <button id="generateBtn" class="btn mx-2">Add Waypoints<i class="fas fa-cheese ml-2"></i></button>
                 <button id="generateBtn" class="btn mx-2">Add Dangerpoints<i class="fas fa-skull ml-2"></i></button>
             </div>
             

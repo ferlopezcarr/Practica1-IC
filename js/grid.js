@@ -11,11 +11,9 @@ $(() => {
     $(".grid").on("click", ".cell", cellPressedHandler);
 });
 
-
 function getRow(numberOfTheCell) {
     return Math.floor(numberOfTheCell / grid[0].length);
 }
-
 
 function getColumn(numberOfTheCell) {
     return numberOfTheCell % grid[0].length;

@@ -363,3 +363,7 @@ form-group, label {
     color: #FFC107;
   }
   
+.info {
+    font-size: 26px;
+    font-weight: bold;
+}
