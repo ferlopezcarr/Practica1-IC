@@ -27,19 +27,19 @@ function cellPressedHandler(event) {
     let cell = $(".grid").children(".cell").eq(getIndex(row, column));
 
     if (!start) { 
-        if (!grid[row][column].isWall) {
+        if (!grid[row][column].isWall && cell.is(':empty')) {
             start = {x : row, y : column};
             drawStartNode();
             $(".info").text("Push over a cell to indicate the end point");
         }
-    } else if (!end && !grid[row][column].isWall) { 
+    } else if (!end && !grid[row][column].isWall && cell.is(':empty')) { 
         if (!grid[row][column].isWall) {
             end = {x : row, y : column};
             drawEndNode();
             $(".info").text("Push over any cell to create a new wall");
             $("#findPathBtn").prop("disabled", false);
         }
-    } else if ((row != start.x || column != start.y) && (row != end.x || column != end.y) && !grid[row][column].isWall){ 
+    } else if ((row != start.x || column != start.y) && (row != end.x || column != end.y) && !grid[row][column].isWall && cell.is(':empty')){ 
         grid[row][column].isWall = true;
         drawWall(row, column);
     }
@@ -92,6 +92,7 @@ function generateGrid() {
             "grid-template-rows":       rowsCss,
             "grid-template-columns":    columnsCss
         });
+        //$(".grid").hide();
 
         //inicializacion de la matriz tanto en css como en js
         for(let i=0; i < Number(numRows); i++) {
@@ -101,8 +102,26 @@ function generateGrid() {
                 grid[i][j] = {};
             }
         }
-        //$("#generatingForm").hide();
-        $("#gridContainer").show();
+
+        /*
+        if(numRows > 15 || numCols > 15) {
+            let cells = $(".cell");
+            let height = cells.css("height");
+            let width = cells.css("width");
+            height = Number(height.slice(0, height.length-2));
+            width = Number(width.slice(0, width.length-2));
+            height = height*0.5;
+            width = width*0.5;
+            for(let cellIndex in cells) {
+                $(cells[cellIndex]).css({ 
+                    "height" : height+"px",
+                    "width" : width+"px"
+                });
+            }
+        }
+        */
+       
+        //$(".grid").show();
         
         astar.init();
         astar.generateRandomWalls(numberOfWalls, start, end);
@@ -146,7 +165,7 @@ function drawEndNode() {
     width = Number(width.slice(0, width.length-2));
     height = height*0.8;
     width = width*0.8;
-    cell.append("<img src='img/agujero.png' height='"+height+"px' width='"+width+"px'>");
+    cell.append("<img src='img/agujero-roto.png' height='"+height+"px' width='"+width+"px'>");
 }
 
 
@@ -185,38 +204,49 @@ function drawWalls() {
 
 function appendHuellas(cell, path) {
     let gridJqElem = $(".grid");
-    let height = cell.css("height");
-    let width = cell.css("width");
-    height = Number(height.slice(0, height.length-2));
-    width = Number(width.slice(0, width.length-2));
-    height = height*0.6;
-    width = width*0.6;
-
+    let cellHeight = cell.css("height");
+    let cellWidth = cell.css("width");
+    cellHeight = Number(cellHeight.slice(0, cellHeight.length-2));
+    cellWidth = Number(cellWidth.slice(0, cellWidth.length-2));
+    let height = cellHeight*0.6;
+    let width = cellWidth*0.6;
 
     if (path[k + 1].x == path[k].x + 1 && path[k + 1].y == path[k].y + 1 ) { //Down and right
-        cell.append("<img class='huella' src='img/huella-abajo-derecha.jpg' height='"+height+"px' width='"+width+"px'>");
+        cell.append("<img class='huella' src='img/huella-abajo-derecha.png' height='"+height+"px' width='"+width+"px'>");
     } else if (path[k + 1].x == path[k].x + 1 && path[k + 1].y == path[k].y - 1) { //Down and left
-        cell.append("<img class='huella' src='img/huella-abajo-izquierda.jpg' height='"+height+"px' width='"+width+"px'>");
+        cell.append("<img class='huella' src='img/huella-abajo-izquierda.png' height='"+height+"px' width='"+width+"px'>");
     } else if (path[k + 1].x == path[k].x - 1 && path[k + 1].y == path[k].y + 1) { //Up and right
-        cell.append("<img class='huella' src='img/huella-arriba-derecha.jpg' height='"+height+"px' width='"+width+"px'>");
+        cell.append("<img class='huella' src='img/huella-arriba-derecha.png' height='"+height+"px' width='"+width+"px'>");
     } else if (path[k + 1].x == path[k].x - 1 && path[k + 1].y == path[k].y - 1) { //Up and left
-        cell.append("<img class='huella' src='img/huella-arriba-izquierda.jpg' height='"+height+"px' width='"+width+"px'>");
+        cell.append("<img class='huella' src='img/huella-arriba-izquierda.png' height='"+height+"px' width='"+width+"px'>");
     } else if (path[k + 1].x == path[k].x + 1){ // Down
-        cell.append("<img class='huella' src='img/huella-abajo.jpg' height='"+height+"px' width='"+width+"px'>");
+        cell.append("<img class='huella' src='img/huella-abajo.png' height='"+height+"px' width='"+width+"px'>");
     } else if (path[k + 1].x == path[k].x - 1) { // Up
-        cell.append("<img class='huella' src='img/huella-arriba.jpg' height='"+height+"px' width='"+width+"px'>");
+        cell.append("<img class='huella' src='img/huella-arriba.png' height='"+height+"px' width='"+width+"px'>");
     } else if (path[k + 1].y == path[k].y - 1) { // Left
-        cell.append("<img class='huella' src='img/huella-izquierda.jpg' height='"+height+"px' width='"+width+"px'>");
+        cell.append("<img class='huella' src='img/huella-izquierda.png' height='"+height+"px' width='"+width+"px'>");
     } else if (path[k + 1].y == path[k].y + 1) { // Right
-        cell.append("<img class='huella' src='img/huella-derecha.jpg' height='"+height+"px' width='"+width+"px'>");
+        cell.append("<img class='huella' src='img/huella-derecha.png' height='"+height+"px' width='"+width+"px'>");
     }
 
-
-    if (k < path.length - 2) {
+    if(k == path.length -2) {
         ++k;
         cell = gridJqElem.children(".cell").eq(getIndex(path[k].x, path[k].y));
         setTimeout(() => {
-            appendHuellas(cell, path)
+            cell.empty();
+            cell.append("<img src='img/meta-conseguida.png' height='"+cellHeight+"px' width='"+cellWidth+"px'>");
+
+            $("#gif").append("<img src='img/meta-conseguida.gif'>");
+            setTimeout(function() {
+                $("#gif").empty();
+            }, 7000);
+        }, 1000);
+    }
+    else if (k < path.length - 2) {
+        ++k;
+        cell = gridJqElem.children(".cell").eq(getIndex(path[k].x, path[k].y));
+        setTimeout(() => {
+            appendHuellas(cell, path);
         }, 1000);
     } else {
         k = 0;
@@ -241,7 +271,6 @@ function draw(path) {
     $(".info").append(textInfo);
 
     $("#findPathBtn").prop("disabled", true);
-   
 }
 
 function sleep(milliseconds) {
