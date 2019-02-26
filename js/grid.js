@@ -2,7 +2,7 @@ let grid = [];
 let start;
 let end;
 let k = 0;
-
+let stepTime = 250;
 
 $(() => {
     $("#generateBtn").click(generateGrid);
@@ -58,10 +58,19 @@ function cleanGridButtonHandler() {
 
 
 function findPathButtonHandler() {
+    let gridJqElem = $(".grid");
+    let cell = gridJqElem.children(".cell").eq(getIndex(start.x, start.y));
+    cell.empty();
+    cell.append("<img src='img/humo.gif'>");
+
+    $("#intialNodeLegend").attr('src', 'img/humo.gif');
+
     findPath();
 }
 
 function generateGrid() {
+
+    $("#intialNodeLegend").attr('src', 'img/jerry-esperando.png');
 
     let numRows = Number($("#rows").val());
     let numCols = Number($("#columns").val());
@@ -103,7 +112,6 @@ function generateGrid() {
             }
         }
 
-        /*
         if(numRows > 15 || numCols > 15) {
             let cells = $(".cell");
             let height = cells.css("height");
@@ -112,14 +120,11 @@ function generateGrid() {
             width = Number(width.slice(0, width.length-2));
             height = height*0.5;
             width = width*0.5;
-            for(let cellIndex in cells) {
-                $(cells[cellIndex]).css({ 
-                    "height" : height+"px",
-                    "width" : width+"px"
-                });
-            }
+            cells.css({
+                "min-height" : height+"px",
+                "min-width" : width+"px",
+            });
         }
-        */
        
         //$(".grid").show();
         
@@ -237,17 +242,19 @@ function appendHuellas(cell, path) {
             cell.append("<img src='img/meta-conseguida.png' height='"+cellHeight+"px' width='"+cellWidth+"px'>");
 
             $("#gif").append("<img src='img/meta-conseguida.gif'>");
+            $("#gif").parent().removeClass("d-none");
             setTimeout(function() {
                 $("#gif").empty();
+                $("#gif").parent().addClass("d-none");
             }, 7000);
-        }, 1000);
+        }, stepTime);
     }
     else if (k < path.length - 2) {
         ++k;
         cell = gridJqElem.children(".cell").eq(getIndex(path[k].x, path[k].y));
         setTimeout(() => {
             appendHuellas(cell, path);
-        }, 1000);
+        }, stepTime);
     } else {
         k = 0;
     }
@@ -262,6 +269,9 @@ function draw(path) {
 
     if (path.length == 0) {
         textInfo = "<span style='color: #E00024'>The end point is unreachable</span>";
+        $("#gif").parent().empty();
+        $("#gif").append("<img src='img/meta-conseguida.gif'>");
+        $("#gif").parent().removeClass("d-none");
     } else {
         textInfo = "The path took " + path.length + " steps";
         cell = gridJqElem.children(".cell").eq(getIndex(path[k].x, path[k].y));
