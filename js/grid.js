@@ -7,7 +7,7 @@ let stepTime = 250;
 $(() => {
     $("#generateBtn").click(generateGrid);
     $("#findPathBtn").click(findPathButtonHandler);
-    $("#cleanGridBtn").click(cleanGridButtonHandler);
+    $("#initialNodeDiv").click(drawStartNode);
     $(".grid").on("click", ".cell", cellPressedHandler);
 });
 
@@ -44,16 +44,6 @@ function cellPressedHandler(event) {
 }
 
 //Button handlers
-
-function cleanGridButtonHandler() {
-    $(".grid").children(".cell").empty();
-    for(let i = 0; i < grid.length; ++i) {
-        for (let j = 0; j < grid[0].length; ++j) {
-            grid[i][j].isWall = false;
-        }
-    }
-}
-
 
 function findPathButtonHandler() {
     let gridJqElem = $(".grid");
@@ -129,7 +119,7 @@ function generateGrid() {
         astar.init();
         astar.generateRandomWalls(numberOfWalls, start, end);
         drawWalls();
-        $(".info").text("Push over a cell to indicate the starting point");
+        $(".info").text("Select the node you want to add from legend and then click on the desired cell");
 
         $("#findPathBtn").prop("disabled", true);
         $("#cleanGridBtn").prop("disabled", false);
@@ -240,12 +230,7 @@ function appendHuellas(cell, path) {
             cell.append("<img src='img/meta-conseguida.png' height='"+cellHeight+"px' width='"+cellWidth+"px'>");
 
             $('#tv').modal('toggle');
-            $("#gif").append("<img src='img/meta-conseguida.gif'>");
-            $("#gif").parent().removeClass("d-none");
-            setTimeout(function() {
-                $("#gif").empty();
-                $("#gif").parent().addClass("d-none");
-            }, 7000);
+            $("#tv-content").attr('src', 'img/meta-conseguida.gif');
         }, stepTime);
     }
     else if (k < path.length - 2) {
@@ -268,9 +253,8 @@ function draw(path) {
 
     if (path.length == 0) {
         textInfo = "<span style='color: #E00024'>The end point is unreachable</span>";
-        $("#gif").parent().empty();
-        $("#gif").append("<img src='img/meta-conseguida.gif'>");
-        $("#gif").parent().removeClass("d-none");
+        $('#tv').modal('toggle');
+        $("#tv-content").attr('src', 'img/no-camino.gif');
     } else {
         textInfo = "The path took " + path.length + " steps";
         cell = gridJqElem.children(".cell").eq(getIndex(path[k].x, path[k].y));
