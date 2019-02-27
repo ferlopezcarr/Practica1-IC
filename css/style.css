@@ -363,8 +363,10 @@ form-group, label {
     color: #FFC107;
   }
   
+
+
 .info {
-    font-size: 26px;
+    font-size: 20px;
     font-weight: bold;
 }
 
@@ -382,4 +384,22 @@ form-group, label {
     position: absolute;
     z-index: -8;
     padding: 15px;
+}
+
+.legend-node {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+
+    padding: 5px 0px;
+}
+
+.legend-node:hover {
+    background-color: #F7F7F7;
+    cursor: pointer;
+}
+
+.legend-node:active {
+    background-color: #E1E2E1;
 }
