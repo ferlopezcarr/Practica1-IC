@@ -367,3 +367,19 @@ form-group, label {
     font-size: 26px;
     font-weight: bold;
 }
+
+.modal-content {
+    background-image: none !important;
+    border: none !important;
+}
+
+#tv-img {
+    position: absolute;
+    z-index: -7;
+}
+
+#tv-content {
+    position: absolute;
+    z-index: -8;
+    padding: 15px;
+}

@@ -239,6 +239,7 @@ function appendHuellas(cell, path) {
             cell.empty();
             cell.append("<img src='img/meta-conseguida.png' height='"+cellHeight+"px' width='"+cellWidth+"px'>");
 
+            $('#tv').modal('toggle');
             $("#gif").append("<img src='img/meta-conseguida.gif'>");
             $("#gif").parent().removeClass("d-none");
             setTimeout(function() {
