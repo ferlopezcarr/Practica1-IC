@@ -26,13 +26,13 @@ function cellPressedHandler(event) {
 
     if (!start) { 
         if (!grid[row][column].isWall && cell.is(':empty')) {
-            start = {x : row, y : column};
+            start = astar.newNode(row, column);
             drawStartNode();
             $(".info").text("Push over a cell to indicate the end point");
         }
     } else if (!end && !grid[row][column].isWall && cell.is(':empty')) { 
         if (!grid[row][column].isWall) {
-            end = {x : row, y : column};
+            end = astar.newNode(row, column);
             drawEndNode();
             $(".info").text("Push over any cell to create a new wall");
             $("#findPathBtn").prop("disabled", false);
@@ -113,10 +113,8 @@ function generateGrid() {
                 "min-width" : width+"px",
             });
         }
-       
-        //$(".grid").show();
-        
-        astar.init();
+               
+        astar.initGrid();
         astar.generateRandomWalls(numberOfWalls, start, end);
         drawWalls();
         $(".info").text("Select the node you want to add from legend and then click on the desired cell");
@@ -139,8 +137,8 @@ function drawStartNode() {
     let cell = gridJqElem.children(".cell").eq(getIndex(start.x, start.y));
     let height = cell.css("height");
     let width = cell.css("width");
-    height = Number(height.slice(0, height.length-2));
-    width = Number(width.slice(0, width.length-2));
+    height = Number(height.slice(0, height.length - 2));
+    width = Number(width.slice(0, width.length - 2));
     height = height*0.95;
     width = width*0.95;
     cell.append("<img src='img/jerry-esperando.png' height='"+height+"px' width='"+width+"px'>");
@@ -162,8 +160,8 @@ function drawEndNode() {
 }
 
 
-function findPath(numberOfWalls) {
-    let path = astar.search(start, end, numberOfWalls);
+function findPath() {
+    let path = astar.search(grid[start.x][start.y], grid[end.x][end.y]);
     draw(path);
 }
 
@@ -222,7 +220,7 @@ function appendHuellas(cell, path) {
         cell.append("<img class='huella' src='img/huella-derecha.png' height='"+height+"px' width='"+width+"px'>");
     }
 
-    if(k == path.length -2) {
+    if(k == path.length - 2) {
         ++k;
         cell = gridJqElem.children(".cell").eq(getIndex(path[k].x, path[k].y));
         setTimeout(() => {
@@ -266,11 +264,3 @@ function draw(path) {
     $("#findPathBtn").prop("disabled", true);
 }
 
-function sleep(milliseconds) {
-    var start = new Date().getTime();
-    for (var i = 0; i < 1e7; i++) {
-        if ((new Date().getTime() - start) > milliseconds) {
-            break;
-        }
-    }
-}
