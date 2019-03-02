@@ -3,10 +3,14 @@ let start;
 let end;
 let k = 0;
 let stepTime = 250;
+let generatedGridClon;
 
 $(() => {
+    $('[data-toggle="popover"]').popover();
+
     $("#generateBtn").click(generateGrid);
     $("#findPathBtn").click(findPathButtonHandler);
+    $("#cleanPathBtn").click(restoreClonedGrid);
     $("#initialNodeDiv").click(drawStartNode);
     $(".grid").on("click", ".cell", cellPressedHandler);
 });
@@ -26,16 +30,19 @@ function cellPressedHandler(event) {
 
     if (!start) { 
         if (!grid[row][column].isWall && cell.is(':empty')) {
-            start = {x : row, y : column};
+            start = astar.newNode(row, column);
             drawStartNode();
-            $(".info").text("Push over a cell to indicate the end point");
+            $(".tom").attr("data-content", "Push over a cell to indicate the end point");
+            $(".tom").popover('show');
         }
     } else if (!end && !grid[row][column].isWall && cell.is(':empty')) { 
         if (!grid[row][column].isWall) {
-            end = {x : row, y : column};
+            end = astar.newNode(row, column);
             drawEndNode();
-            $(".info").text("Push over any cell to create a new wall");
+            $(".tom").attr("data-content", "Push over a cell to to create a new wall");
+            $(".tom").popover('show');
             $("#findPathBtn").prop("disabled", false);
+            $("#cleanPathBtn").prop("disabled", true);
         }
     } else if ((row != start.x || column != start.y) && (row != end.x || column != end.y) && !grid[row][column].isWall && cell.is(':empty')){ 
         grid[row][column].isWall = true;
@@ -54,6 +61,13 @@ function findPathButtonHandler() {
     $("#intialNodeLegend").attr('src', 'img/humo.gif');
 
     findPath();
+}
+
+function restoreClonedGrid() {
+    
+    let gridContainer = $(".grid").parent();
+    gridContainer.empty();
+    gridContainer.append(generatedGridClon);
 }
 
 function generateGrid() {
@@ -89,7 +103,6 @@ function generateGrid() {
             "grid-template-rows":       rowsCss,
             "grid-template-columns":    columnsCss
         });
-        //$(".grid").hide();
 
         //inicializacion de la matriz tanto en css como en js
         for(let i=0; i < Number(numRows); i++) {
@@ -114,15 +127,18 @@ function generateGrid() {
             });
         }
        
-        //$(".grid").show();
+        $("#grid-card").removeClass("d-none");
         
         astar.init();
         astar.generateRandomWalls(numberOfWalls, start, end);
         drawWalls();
-        $(".info").text("Select the node you want to add from legend and then click on the desired cell");
+        generatedGridClon = $(".grid").clone();
+
+        $(".tom").attr("data-content", "Select the node you want to add from legend and then click on the desired cell");
+        $(".tom").popover('show');
 
         $("#findPathBtn").prop("disabled", true);
-        $("#cleanGridBtn").prop("disabled", false);
+        $("#cleanPathBtn").prop("disabled", true);
     } else {
         if(!numRows) {
             $("#rows").addClass("is-invalid");
@@ -164,6 +180,7 @@ function drawEndNode() {
 
 function findPath(numberOfWalls) {
     let path = astar.search(start, end, numberOfWalls);
+    $(".tom").popover('hide');
     draw(path);
 }
 
@@ -249,10 +266,15 @@ function draw(path) {
     let textInfo = "";
     let cell;
 
-    $(".info").empty();
+    $(".tom").attr("data-content", "");
 
     if (path.length == 0) {
-        textInfo = "<span style='color: #E00024'>The end point is unreachable</span>";
+        textInfo = "The end point is unreachable";
+        $(".popover-body").addClass("no-path");
+        setTimeout(function() {
+            $(".tom").popover('hide');
+            $(".popover-body").removeClass("no-path");
+        },5000);
         $('#tv').modal('toggle');
         $("#tv-content").attr('src', 'img/no-camino.gif');
     } else {
@@ -261,9 +283,11 @@ function draw(path) {
         appendHuellas(cell, path);
     }
 
-    $(".info").append(textInfo);
+    $(".tom").attr("data-content", textInfo);
+    $(".tom").popover('show');
 
     $("#findPathBtn").prop("disabled", true);
+    $("#cleanPathBtn").prop("disabled", false);
 }
 
 function sleep(milliseconds) {

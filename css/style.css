@@ -403,3 +403,35 @@ form-group, label {
 .legend-node:active {
     background-color: #E1E2E1;
 }
+
+.not-allowed {
+    cursor: not-allowed !important;
+}
+
+.tom {
+    position: absolute;
+    z-index: 100;
+
+    bottom: 20px;
+    left: auto;
+    right: 5px;
+
+    background: none;
+}
+
+.tom-img {
+    height: 400px;
+    padding-left: 50px;
+}
+
+.popover {
+    z-index: 1;
+}
+
+.popover-body {
+    font-size: 24px;
+}
+
+.no-path {
+    color: #E00024;
+}
