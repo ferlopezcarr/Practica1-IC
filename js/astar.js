@@ -15,6 +15,8 @@ var astar = {
             debug : "",
             parent : null,
             isWall : false,
+            isWaypoint : false,
+            isDangerpoint : false,
             weight: 0
         }
     },

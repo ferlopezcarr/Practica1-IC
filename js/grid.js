@@ -12,8 +12,9 @@ var imgNode;
 var numRows = 0;
 var numCols = 0;
 
-var wayponits = 0;
-var dangerpoints = 0;
+var wayponitList = [];
+var dangerpointList = [];
+
 
 /*On load*/
 $(() => {
@@ -49,7 +50,7 @@ function freeNodes() {
         totalNodes--;
     if(end)
         totalNodes--;
-    totalNodes = totalNodes - numberOfWallsPlaced - wayponits - dangerpoints;
+    totalNodes = totalNodes - numberOfWallsPlaced - wayponitList.length - dangerpointList.length;
 }
 
 
@@ -65,11 +66,14 @@ function cellPressedHandler(event) {
             case "initialNode":
                 handleAddInitialNode(row, column, cell);
             break;
-            case "waypointNode":
-                
-            break;
             case "wallNode":
                 handleAddWallNode(row, column, cell);
+            break;
+            case "waypointNode":
+                handleAddWaypointNode(row, column, cell);
+            break;
+            case "dangerpointNode":
+                handleAddDangerpointNode(row, column, cell);
             break;
             case "endNode":
                 handleAddEndNode(row, column, cell);
@@ -127,6 +131,34 @@ function handleAddWallNode(row, column, cell) {
     }
 }
 
+function handleAddWaypointNode(row, column, cell) {
+    if(freeNodes() == 0) {
+        tomSay("No space!");
+    }
+    else if(grid[row][column].isWall || !cell.is(':empty')) {
+        notifyNotEmptyNode();
+    }
+    else {
+        grid[row][column].isWaypoint = true;
+        wayponitList.push(grid[row][column]);
+        drawWaypointNode(row, column);
+    }
+}
+
+function handleAddDangerpointNode(row, column, cell) {
+    if(freeNodes() == 0) {
+        tomSay("No space!");
+    }
+    else if(grid[row][column].isWall || !cell.is(':empty')) {
+        notifyNotEmptyNode();
+    }
+    else {
+        grid[row][column].isDangerpoint = true;
+        dangerpointList.push(grid[row][column]);
+        drawDangerpointNode(row, column);
+    }
+}
+
 function handleAddEndNode(row, column, cell) {
     if(freeNodes() == 0) {
         tomSay("No space!");
@@ -180,7 +212,7 @@ function handleRemoveNode(row, column, cell) {
 
 function handleGenerateGrid() {
 
-    $("#intialNode").attr('src', 'img/jerry-esperando.png');
+    $("#initialNode").attr('src', 'img/jerry-esperando.png');
 
     numRows = Number($("#rows").val());
     numCols = Number($("#columns").val());
@@ -271,10 +303,16 @@ function handleGenerateGrid() {
 function handleFindPath() {
     let gridJqElem = $(".grid");
     let cell = gridJqElem.children(".cell").eq(getIndex(start.x, start.y));
+    let height = cell.css("height");
+    let width = cell.css("width");
+    height = Number(height.slice(0, height.length - 2));
+    width = Number(width.slice(0, width.length - 2));
+    height = height*0.85;
+    width = width*0.85;
     cell.empty();
-    cell.append("<img src='img/humo.gif'>");
+    cell.append("<img src='img/humo.gif' height='"+height+"' width='"+width+"'>");
 
-    $("#intialNode").attr('src', 'img/humo.gif');
+    $("#initialNode").attr('src', 'img/humo.gif');
 
     findPath();
 }
@@ -300,6 +338,37 @@ function drawStartNode() {
     width = width*0.95;
     cell.append("<img src='img/jerry-esperando.png' height='"+height+"px' width='"+width+"px'>");
 }
+
+/*--waypoint node*/
+function drawWaypointNode(x, y) {
+    let gridJqElem = $(".grid");
+
+    let cell = gridJqElem.children(".cell").eq(getIndex(x, y));
+    cell.empty();
+    let height = cell.css("height");
+    let width = cell.css("width");
+    height = Number(height.slice(0, height.length-2));
+    width = Number(width.slice(0, width.length-2));
+    height = height*0.8;
+    width = width*0.8;
+    cell.append("<img src='img/queso.png' height='"+height+"px' width='"+width+"px'>");
+}
+
+/*--dangerpoint node*/
+function drawDangerpointNode(x, y) {
+    let gridJqElem = $(".grid");
+
+    let cell = gridJqElem.children(".cell").eq(getIndex(x, y));
+    cell.empty();
+    let height = cell.css("height");
+    let width = cell.css("width");
+    height = Number(height.slice(0, height.length-2));
+    width = Number(width.slice(0, width.length-2));
+    height = height*0.8;
+    width = width*0.8;
+    cell.append("<img src='img/dinamita.png' height='"+height+"px' width='"+width+"px'>");
+}
+
 
 /*--end node*/
 function drawEndNode() {
@@ -342,9 +411,22 @@ function drawWall(x, y) {
 
 /*--path*/
 function findPath() {
-    let path = astar.search(grid[start.x][start.y], grid[end.x][end.y]);
-    $(".tom").popover('hide');
-    draw(path);
+    let path;
+    if(!wayponitList || wayponitList.length == 0) {
+        path = astar.search(grid[start.x][start.y], grid[end.x][end.y]);
+        draw(path);
+    }
+    else if(wayponitList.length >= 1) {
+        let i;
+        for(i = 0; i < wayponitList.length-1; i++) {
+            path = astar.search(grid[start.x][start.y], wayponitList[i]);
+            draw(path);
+        }
+        path = draw(astar.search(wayponitList[i], grid[end.x][end.y]));
+        draw(path);
+    }
+    
+    //$(".tom").popover('hide');
 }
 
 function draw(path) {
@@ -353,7 +435,7 @@ function draw(path) {
     let cell;
 
     if (path.length == 0) {
-        textInfo = "The end point is unreachable";
+        textInfo = "The point is unreachable";
         //$(".popover-body").addClass("no-path");
         //creo que cuando dice none es por esto
         $('#tv').modal('toggle');
@@ -379,6 +461,7 @@ function appendHuellas(cell, path) {
     let height = cellHeight*0.6;
     let width = cellWidth*0.6;
 
+    /*Calculate direction*/
     if (path[k + 1].x == path[k].x + 1 && path[k + 1].y == path[k].y + 1 ) { //Down and right
         cell.append("<img class='huella' src='img/huella-abajo-derecha.png' height='"+height+"px' width='"+width+"px'>");
     } else if (path[k + 1].x == path[k].x + 1 && path[k + 1].y == path[k].y - 1) { //Down and left
@@ -400,13 +483,20 @@ function appendHuellas(cell, path) {
     if(k == path.length - 2) {
         ++k;
         cell = gridJqElem.children(".cell").eq(getIndex(path[k].x, path[k].y));
-        setTimeout(() => {
+        setTimeout(function() {
             cell.empty();
-            cell.append("<img src='img/meta-conseguida.png' height='"+cellHeight+"px' width='"+cellWidth+"px'>");
-
-            $('#tv').modal('toggle');
-            $("#tv-content").attr('src', 'img/meta-conseguida.gif');
-        }, stepTime);
+            if(path[k].isWaypoint) {
+                cell.append("<img src='img/jerry-queso.png' height='"+cellHeight*0.9+"px' width='"+cellWidth*0.9+"px'>");
+            }
+            else if(path[k].isDangerpoint) {
+                cell.append("<img src='img/dinamita-apagada.png' height='"+cellHeight*0.9+"px' width='"+cellWidth*0.9+"px'>");
+            }
+            else {
+                cell.append("<img src='img/meta-conseguida.png' height='"+cellHeight+"px' width='"+cellWidth+"px'>");
+                $('#tv').modal('toggle');
+                $("#tv-content").attr('src', 'img/meta-conseguida.gif');
+            }
+        }, stepTime, path);
     }
     else if (k < path.length - 2) {
         ++k;
