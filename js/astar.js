@@ -1,5 +1,8 @@
 /* a-star algorithm */
 var astar = {
+
+    numberOfWallsPlaced: 0,
+
     newNode: function(x,y) {
         return {
             x : Number(x),
@@ -25,7 +28,7 @@ var astar = {
     },
 
     generateRandomWalls : function(numberOfWalls, start, end) {
-        let numberOfWallsPlaced = 0;
+        numberOfWallsPlaced = 0;
         numberOfWalls = Math.min(grid.length * grid[0].length - 2, numberOfWalls);
 
         while (numberOfWallsPlaced < numberOfWalls) {

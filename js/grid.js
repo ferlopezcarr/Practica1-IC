@@ -1,19 +1,39 @@
+/* ------ Grid Javascript : Practica 1 - IC ------ */
+/*Vars*/
 let grid = [];
 let start;
 let end;
 let k = 0;
 let stepTime = 250;
-let generatedGridClon;
 
+let generatedGridClon;
+var imgNode;
+
+var numRows = 0;
+var numCols = 0;
+
+var wayponits = 0;
+var dangerpoints = 0;
+
+/*On load*/
 $(() => {
     $('[data-toggle="popover"]').popover();
 
-    $("#generateBtn").click(generateGrid);
-    $("#findPathBtn").click(findPathButtonHandler);
-    $("#cleanPathBtn").click(restoreClonedGrid);
-    $("#initialNodeDiv").click(drawStartNode);
+    $("#generateBtn").click(handleGenerateGrid);
+    $("#findPathBtn").click(handleFindPath);
+    $("#cleanPathBtn").click(handleRestoreClonedGrid);
+    $(".legend-node").click(function() {
+        imgNode = $(this).find("img");
+    });
+
     $(".grid").on("click", ".cell", cellPressedHandler);
 });
+
+
+/*Aux funtions*/
+function getIndex(row, col) {
+    return (grid[0].length * row + col);
+}
 
 function getRow(numberOfTheCell) {
     return Math.floor(numberOfTheCell / grid[0].length);
@@ -23,59 +43,147 @@ function getColumn(numberOfTheCell) {
     return numberOfTheCell % grid[0].length;
 }
 
+function freeNodes() {
+    let totalNodes = numRows*numCols;
+    if(start)
+        totalNodes--;
+    if(end)
+        totalNodes--;
+    totalNodes = totalNodes - numberOfWallsPlaced - wayponits - dangerpoints;
+}
+
+
+/*Cell pressed handler*/
+
 function cellPressedHandler(event) {
     let row = Number(getRow($(this).index()));
     let column = Number(getColumn($(this).index()));
     let cell = $(".grid").children(".cell").eq(getIndex(row, column));
 
-    if (!start) { 
-        if (!grid[row][column].isWall && cell.is(':empty')) {
-            start = astar.newNode(row, column);
-            drawStartNode();
-            $(".tom").attr("data-content", "Push over a cell to indicate the end point");
-            $(".tom").popover('show');
+    if(imgNode) {
+        switch($(imgNode).attr("id")) {
+            case "initialNode":
+                handleAddInitialNode(row, column, cell);
+            break;
+            case "waypointNode":
+                
+            break;
+            case "wallNode":
+                handleAddWallNode(row, column, cell);
+            break;
+            case "endNode":
+                handleAddEndNode(row, column, cell);
+            break;
+            case "removeNode":
+                handleRemoveNode(row, column, cell);
+            break;
         }
-    } else if (!end && !grid[row][column].isWall && cell.is(':empty')) { 
-        if (!grid[row][column].isWall) {
-            end = astar.newNode(row, column);
-            drawEndNode();
-            $(".tom").attr("data-content", "Push over a cell to to create a new wall");
-            $(".tom").popover('show');
+    }   
+}
+
+function handleAddInitialNode(row, column, cell) {
+    if(freeNodes() == 0) {
+        tomSay("No space!");
+    }
+    else if(grid[row][column].isWall || !cell.is(':empty')) {
+        notifyNotEmptyNode();
+    }
+    else if(start) {
+        tomSay("The start node is placed");
+    }
+    else {
+        start = astar.newNode(row, column);
+        drawStartNode();
+        if(end) {
             $("#findPathBtn").prop("disabled", false);
-            $("#cleanPathBtn").prop("disabled", true);
         }
-    } else if ((row != start.x || column != start.y) && (row != end.x || column != end.y) && !grid[row][column].isWall && cell.is(':empty')){ 
-        grid[row][column].isWall = true;
-        drawWall(row, column);
+        $(imgNode).parent().removeClass("legend-node");
+        $(imgNode).parent().addClass("not-allowed");
+        imgNode = undefined;
     }
 }
 
-//Button handlers
+function handleAddWallNode(row, column, cell) {
+    let canDrawWallNode = false;
+    if(freeNodes() == 0) {
+        tomSay("No space!");
+    }
+    else {
+        if(start && end) {
+            canDrawWallNode = ((row != start.x || column != start.y) && (row != end.x || column != end.y) && /*grid[row][column].isWall && */cell.is(':empty'));
+        }
+        else {
+            canDrawWallNode = (!grid[row][column].isWall && cell.is(':empty'));
+        }
 
-function findPathButtonHandler() {
-    let gridJqElem = $(".grid");
-    let cell = gridJqElem.children(".cell").eq(getIndex(start.x, start.y));
-    cell.empty();
-    cell.append("<img src='img/humo.gif'>");
-
-    $("#intialNodeLegend").attr('src', 'img/humo.gif');
-
-    findPath();
+        if(canDrawWallNode) {
+            grid[row][column].isWall = true;
+            drawWall(row, column);
+            numberOfWallsPlaced++;
+        }
+        else {
+            notifyNotEmptyNode();
+        }
+    }
 }
 
-function restoreClonedGrid() {
-    
-    let gridContainer = $(".grid").parent();
-    gridContainer.empty();
-    gridContainer.append(generatedGridClon);
+function handleAddEndNode(row, column, cell) {
+    if(freeNodes() == 0) {
+        tomSay("No space!");
+    }
+    else if(grid[row][column].isWall || !cell.is(':empty')) {
+        notifyNotEmptyNode();
+    }
+    else if(end) {
+        tomSay("The end node is placed");
+    }
+    else {
+        end = astar.newNode(row, column);
+        drawEndNode();
+        if(start) {
+            $("#findPathBtn").prop("disabled", false);
+        }
+        $(imgNode).parent().removeClass("legend-node");
+        $(imgNode).parent().addClass("not-allowed");
+        imgNode = undefined;
+    }
 }
 
-function generateGrid() {
+function handleRemoveNode(row, column, cell) {
+    if(freeNodes() == (numRows*numCols)) {
+        tomSay("Nothing to remove!");
+    }
+    else if(!cell.is(':empty')) {
+        if(start && (start.x == row && start.y == column)) {
+            start = undefined;
+            $("#initialNode").parent().addClass("legend-node");
+            $("#initialNode").parent().removeClass("not-allowed");
+            $("#findPathBtn").prop("disabled", true);
+        }
+        else if(end && (end.x == row && end.y == column)) {
+            end = undefined;
+            $("#endNode").parent().addClass("legend-node");
+            $("#endNode").parent().removeClass("not-allowed");
+            $("#findPathBtn").prop("disabled", true);
+        }
+        else if(grid[row][column].isWall) {
+            grid[row][column].isWall = false;
+            numberOfWallsPlaced--;
+        }
 
-    $("#intialNodeLegend").attr('src', 'img/jerry-esperando.png');
+        cell.empty();
+    }
+}
 
-    let numRows = Number($("#rows").val());
-    let numCols = Number($("#columns").val());
+
+/*Button handlers*/
+
+function handleGenerateGrid() {
+
+    $("#intialNode").attr('src', 'img/jerry-esperando.png');
+
+    numRows = Number($("#rows").val());
+    numCols = Number($("#columns").val());
     let numberOfWalls = Number($("#walls").val());
     start = undefined;
     end = undefined;
@@ -134,8 +242,7 @@ function generateGrid() {
         drawWalls();
         generatedGridClon = $(".grid").clone();
 
-        $(".tom").attr("data-content", "Select the node you want to add from the node list and then click on the desired cell");
-        $(".tom").popover('show');
+        tomSay("Select the node you want to add from the node list and then click on the desired cell", 4);
 
         $("#findPathBtn").prop("disabled", true);
         $("#cleanPathBtn").prop("disabled", true);
@@ -161,7 +268,26 @@ function generateGrid() {
     }
 };
 
+function handleFindPath() {
+    let gridJqElem = $(".grid");
+    let cell = gridJqElem.children(".cell").eq(getIndex(start.x, start.y));
+    cell.empty();
+    cell.append("<img src='img/humo.gif'>");
 
+    $("#intialNode").attr('src', 'img/humo.gif');
+
+    findPath();
+}
+
+function handleRestoreClonedGrid() {
+    let gridContainer = $(".grid").parent();
+    gridContainer.empty();
+    gridContainer.append(generatedGridClon);
+}
+
+
+/*Grid functions*/
+/*--start node*/
 function drawStartNode() {
     let gridJqElem = $(".grid");
 
@@ -175,7 +301,7 @@ function drawStartNode() {
     cell.append("<img src='img/jerry-esperando.png' height='"+height+"px' width='"+width+"px'>");
 }
 
-
+/*--end node*/
 function drawEndNode() {
     let gridJqElem = $(".grid");
 
@@ -190,15 +316,15 @@ function drawEndNode() {
     cell.append("<img src='img/agujero-roto.png' height='"+height+"px' width='"+width+"px'>");
 }
 
-
-function findPath() {
-    let path = astar.search(grid[start.x][start.y], grid[end.x][end.y]);
-    $(".tom").popover('hide');
-    draw(path);
-}
-
-function getIndex(row, col) {
-    return (grid[0].length * row + col);
+/*-- walls*/
+function drawWalls() {
+    for(var x = 0; x < grid.length; x++) {
+        for(var y = 0; y < grid[x].length; y++) {
+            if (grid[x][y].isWall) {
+                drawWall(x, y);
+            } 
+        }  
+    }
 }
 
 function drawWall(x, y) {
@@ -214,16 +340,35 @@ function drawWall(x, y) {
     cell.css({ "background-color" : "#ECDFBD"});
 }
 
-function drawWalls() {
-    for(var x = 0; x < grid.length; x++) {
-        for(var y = 0; y < grid[x].length; y++) {
-            if (grid[x][y].isWall) {
-                drawWall(x, y);
-            } 
-        }  
-    }
+/*--path*/
+function findPath() {
+    let path = astar.search(grid[start.x][start.y], grid[end.x][end.y]);
+    $(".tom").popover('hide');
+    draw(path);
 }
 
+function draw(path) {
+    let gridJqElem = $(".grid");
+    let textInfo = "";
+    let cell;
+
+    if (path.length == 0) {
+        textInfo = "The end point is unreachable";
+        //$(".popover-body").addClass("no-path");
+        //creo que cuando dice none es por esto
+        $('#tv').modal('toggle');
+        $("#tv-content").attr('src', 'img/no-camino.gif');
+    } else {
+        textInfo = "The path took " + path.length + " steps";
+        cell = gridJqElem.children(".cell").eq(getIndex(path[k].x, path[k].y));
+        appendHuellas(cell, path);
+    }
+
+    tomSay(textInfo, 3);
+
+    $("#findPathBtn").prop("disabled", true);
+    $("#cleanPathBtn").prop("disabled", false);
+}
 
 function appendHuellas(cell, path) {
     let gridJqElem = $(".grid");
@@ -274,32 +419,20 @@ function appendHuellas(cell, path) {
     }
 }
 
-function draw(path) {
-    let gridJqElem = $(".grid");
-    let textInfo = "";
-    let cell;
 
-    $(".tom").attr("data-content", "");
-
-    if (path.length == 0) {
-        textInfo = "The end point is unreachable";
-        $(".popover-body").addClass("no-path");
-        setTimeout(function() {
-            $(".popover-body").removeClass("no-path");
-            $(".tom").popover('hide');
-        },3000);
-        $('#tv').modal('toggle');
-        $("#tv-content").attr('src', 'img/no-camino.gif');
-    } else {
-        textInfo = "The path took " + path.length + " steps";
-        cell = gridJqElem.children(".cell").eq(getIndex(path[k].x, path[k].y));
-        appendHuellas(cell, path);
-    }
-
-    $(".tom").attr("data-content", textInfo);
+/*Notifiers*/
+function notifyNotEmptyNode() {
     $(".tom").popover('show');
-
-    $("#findPathBtn").prop("disabled", true);
-    $("#cleanPathBtn").prop("disabled", false);
+    $(".popover-body").text("The node is not empty");
+    setTimeout(function() {
+        $(".tom").popover('hide');
+    },2000);
 }
 
+function tomSay(text, seconds) {
+    $(".tom").popover('show');
+    $(".popover-body").text(text);
+    setTimeout(function() {
+        $(".tom").popover('hide');
+    }, (seconds ? seconds * 1000 : 2000 ));
+}
