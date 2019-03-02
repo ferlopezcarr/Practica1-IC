@@ -129,7 +129,7 @@ function generateGrid() {
        
         $("#grid-card").removeClass("d-none");
         
-        astar.init();
+        astar.initGrid();
         astar.generateRandomWalls(numberOfWalls, start, end);
         drawWalls();
         generatedGridClon = $(".grid").clone();
@@ -155,8 +155,8 @@ function drawStartNode() {
     let cell = gridJqElem.children(".cell").eq(getIndex(start.x, start.y));
     let height = cell.css("height");
     let width = cell.css("width");
-    height = Number(height.slice(0, height.length-2));
-    width = Number(width.slice(0, width.length-2));
+    height = Number(height.slice(0, height.length - 2));
+    width = Number(width.slice(0, width.length - 2));
     height = height*0.95;
     width = width*0.95;
     cell.append("<img src='img/jerry-esperando.png' height='"+height+"px' width='"+width+"px'>");
@@ -178,8 +178,8 @@ function drawEndNode() {
 }
 
 
-function findPath(numberOfWalls) {
-    let path = astar.search(start, end, numberOfWalls);
+function findPath() {
+    let path = astar.search(grid[start.x][start.y], grid[end.x][end.y]);
     $(".tom").popover('hide');
     draw(path);
 }
@@ -239,7 +239,7 @@ function appendHuellas(cell, path) {
         cell.append("<img class='huella' src='img/huella-derecha.png' height='"+height+"px' width='"+width+"px'>");
     }
 
-    if(k == path.length -2) {
+    if(k == path.length - 2) {
         ++k;
         cell = gridJqElem.children(".cell").eq(getIndex(path[k].x, path[k].y));
         setTimeout(() => {
@@ -290,11 +290,3 @@ function draw(path) {
     $("#cleanPathBtn").prop("disabled", false);
 }
 
-function sleep(milliseconds) {
-    var start = new Date().getTime();
-    for (var i = 0; i < 1e7; i++) {
-        if ((new Date().getTime() - start) > milliseconds) {
-            break;
-        }
-    }
-}
