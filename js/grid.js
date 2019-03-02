@@ -134,7 +134,7 @@ function generateGrid() {
         drawWalls();
         generatedGridClon = $(".grid").clone();
 
-        $(".tom").attr("data-content", "Select the node you want to add from legend and then click on the desired cell");
+        $(".tom").attr("data-content", "Select the node you want to add from the node list and then click on the desired cell");
         $(".tom").popover('show');
 
         $("#findPathBtn").prop("disabled", true);
