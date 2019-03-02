@@ -80,11 +80,11 @@ function generateGrid() {
     start = undefined;
     end = undefined;
 
-    if(numRows && numCols && numberOfWalls) {
-        $("#rows").removeClass("is-invalid");
-        $("#columns").removeClass("is-invalid");
-        $("#walls").removeClass("is-invalid");
+    $("#rows").removeClass("is-invalid");
+    $("#columns").removeClass("is-invalid");
+    $("#walls").removeClass("is-invalid");
 
+    if((numRows > 1 && numCols > 1 || (numRows + numCols) >= 3) && numberOfWalls >= 0) {
         let rowsCss = "";
         let columnsCss = "";
 
@@ -140,10 +140,23 @@ function generateGrid() {
         $("#findPathBtn").prop("disabled", true);
         $("#cleanPathBtn").prop("disabled", true);
     } else {
-        if(!numRows) {
+        let positiveText = "You must introduce a positive number";
+        if(numRows < 1) {
+            $("#rowsInvalid").text(positiveText);
             $("#rows").addClass("is-invalid");
+        }
+        if(numCols < 1) {
+            $("#columnsInvalid").text(positiveText);
             $("#columns").addClass("is-invalid");
-            $("#walss").addClass("is-invalid");   
+        }
+        if(numberOfWalls < 0) {
+            $("#wallsInvalid").text(positiveText);
+            $("#walls").addClass("is-invalid");
+        }
+
+        if(numRows == 1 && numCols == 1) {
+            $("#rowsInvalid").text("The min dimension is 2x1 or 1x2");
+            $("#rows").addClass("is-invalid");
         }
     }
 };
@@ -272,9 +285,9 @@ function draw(path) {
         textInfo = "The end point is unreachable";
         $(".popover-body").addClass("no-path");
         setTimeout(function() {
-            $(".tom").popover('hide');
             $(".popover-body").removeClass("no-path");
-        },5000);
+            $(".tom").popover('hide');
+        },3000);
         $('#tv').modal('toggle');
         $("#tv-content").attr('src', 'img/no-camino.gif');
     } else {

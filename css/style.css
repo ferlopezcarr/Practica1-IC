@@ -396,6 +396,7 @@ form-group, label {
 }
 
 .legend-node:hover {
+    border: 1px solid #E1E2E1;
     background-color: #F7F7F7;
     cursor: pointer;
 }
