@@ -6,7 +6,8 @@ let end;
 let k = 0;
 let stepTime = 250;
 
-let generatedGridClon;
+let gridHtmlClon;
+let gridMatrixClon = [];
 var imgNode;
 
 var numRows = 0;
@@ -67,6 +68,8 @@ function restart() {
     astar.initGrid();
     addNodeToLegend("#initialNode");
     addNodeToLegend("#endNode");
+    $("#initialNode").attr('src', 'img/jerry-esperando.png');
+    $(".grid").on("click", ".cell", cellPressedHandler);
     imgNode = undefined;
     start = undefined;
     end = undefined;
@@ -228,6 +231,30 @@ function handleRemoveNode(row, column, cell) {
             grid[row][column].isWall = false;
             numberOfWallsPlaced--;
         }
+        else if(grid[row][column].isWaypoint) {
+            grid[row][column].isWaypoint = false;
+            let i = 0;
+            let found = false;
+            while(i < waypointList.length && !found) {
+                found = ((waypointList[i].x == grid[row][column].x) && (waypointList[i].y == grid[row][column].y));
+                i++;
+            }
+            if(found) {
+                waypointList.splice(i-1, 1);
+            }
+        }
+        else if(grid[row][column].isDangerpoint) {
+            grid[row][column].isDangerpoint = false;
+            let i = 0;
+            let found = false;
+            while(i < dangerpointList.length && !found) {
+                found = ((dangerpointList[i].x == grid[row][column].x) && (dangerpointList[i].y == grid[row][column].y));
+                i++;
+            }
+            if(found) {
+                dangerpointList.splice(i-1, 1);
+            }
+        }
 
         cell.empty();
     }
@@ -297,7 +324,8 @@ function handleGenerateGrid() {
         astar.initGrid();
         astar.generateRandomWalls(numberOfWalls, start, end);
         drawWalls();
-        generatedGridClon = $(".grid").clone();
+        gridHtmlClon = $(".grid").clone();
+        gridMatrixClon = JSON.parse(JSON.stringify(grid));
 
         tomSay("Select the node you want to add from the node list and then click on the desired cell", 4);
 
@@ -344,7 +372,10 @@ function handleFindPath() {
 function handleRestoreClonedGrid() {
     let gridContainer = $(".grid").parent();
     gridContainer.empty();
-    gridContainer.append(generatedGridClon);
+    gridContainer.append(gridHtmlClon);
+    gridHtmlClon = $(".grid").clone();
+    grid = gridMatrixClon;
+    gridMatrixClon = JSON.parse(JSON.stringify(grid));
     restart();
 }
 
@@ -453,8 +484,10 @@ function draw(path) {
         textInfo = "The point is unreachable";
         //$(".popover-body").addClass("no-path");
         //creo que cuando dice none es por esto
+       
         $('#tv').modal('toggle');
         $("#tv-content").attr('src', 'img/no-camino.gif');
+
     } else {
         textInfo = "The path took " + path.length + " steps";
         cell = getJQuerySelectorOfCellPressed(path[k].x, path[k].y);
