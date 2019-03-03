@@ -71,6 +71,8 @@ function restart() {
     start = undefined;
     end = undefined;
     k = 0;
+    waypointList = [];
+    dangerpointList = []
 }
 
 function addNodeToLegend(selector) {
@@ -373,6 +375,7 @@ function drawWaypointNode(x, y) {
     height = height*0.8;
     width = width*0.8;
     cell.append("<img src='img/queso.png' height='"+height+"px' width='"+width+"px'>");
+    console.log(waypointList);
 }
 
 /*--dangerpoint node*/
@@ -427,18 +430,24 @@ function drawWall(x, y) {
 
 /*--path*/
 function findPath() {
-    let path;
+    console.log(waypointList);
+    let path = [];
     if(!waypointList || waypointList.length == 0) {
         path = astar.search(grid[start.x][start.y], grid[end.x][end.y]);
         draw(path);
     }
     else if(waypointList.length >= 1) {
-        let i;
-        for(i = 0; i < waypointList.length-1; i++) {
-            path = astar.search(grid[start.x][start.y], waypointList[i]);
-            draw(path);
+        let i = 0;
+        
+        path.push.apply(path, astar.search(grid[start.x][start.y], waypointList[i]));
+        astar.initGridValuesForWaypointsPath();
+        
+        for(i = 0; i < waypointList.length - 1; i++) {
+            // To append the entire content of the list to the path list
+            path.push.apply(path, astar.search(waypointList[i], waypointList[i + 1]));
+            astar.initGridValuesForWaypointsPath();
         }
-        path = draw(astar.search(waypointList[i], grid[end.x][end.y]));
+        path.push.apply(path, astar.search(waypointList[waypointList.length - 1], grid[end.x][end.y]));
         draw(path);
     }
     
