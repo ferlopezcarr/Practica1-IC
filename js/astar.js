@@ -21,6 +21,20 @@ var astar = {
         }
     },
 
+    initGridValuesForWaypointsPath() {
+        for (let j = 0; j < grid.length; ++j) {
+            for (let h = 0; h < grid[0].length; ++h) {
+                grid[j][h].f = 0;
+                grid[j][h].g = 0;
+                grid[j][h].h = 0;
+                grid[j][h].parent = null;
+                grid[j][h].closed = false;
+                grid[j][h].visited = false;
+            }
+        }
+    },
+
+
     initGrid: function() {
         for(var x = 0; x < grid.length; x++) {
             for(var y = 0; y < grid[x].length; y++) {
