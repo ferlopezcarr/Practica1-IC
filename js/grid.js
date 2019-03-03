@@ -12,7 +12,7 @@ var imgNode;
 var numRows = 0;
 var numCols = 0;
 
-var wayponitList = [];
+var waypointList = [];
 var dangerpointList = [];
 
 
@@ -44,13 +44,38 @@ function getColumn(numberOfTheCell) {
     return numberOfTheCell % grid[0].length;
 }
 
+function getJQuerySelectorOfCellPressed(row, column) {
+    return $(".grid").children(".cell").eq(getIndex(row, column));
+}
+
+// The weight is equal to 20% of the diagonal size of the grid
+function getWeightOfDangerpointNode() {
+    return 0.2 * Math.sqrt(Math.pow(grid.length, 2) + Math.pow(grid[0].length, 2));
+}
+
 function freeNodes() {
     let totalNodes = numRows*numCols;
     if(start)
         totalNodes--;
     if(end)
         totalNodes--;
-    totalNodes = totalNodes - numberOfWallsPlaced - wayponitList.length - dangerpointList.length;
+    totalNodes = totalNodes - numberOfWallsPlaced - waypointList.length - dangerpointList.length;
+}
+
+// This function establish all the values to their inital values
+function restart() {
+    astar.initGrid();
+    addNodeToLegend("#initialNode");
+    addNodeToLegend("#endNode");
+    imgNode = undefined;
+    start = undefined;
+    end = undefined;
+    k = 0;
+}
+
+function addNodeToLegend(selector) {
+    $(selector).parent().addClass("legend-node");
+    $(selector).parent().removeClass("not-allowed");
 }
 
 
@@ -59,7 +84,7 @@ function freeNodes() {
 function cellPressedHandler(event) {
     let row = Number(getRow($(this).index()));
     let column = Number(getColumn($(this).index()));
-    let cell = $(".grid").children(".cell").eq(getIndex(row, column));
+    let cell = getJQuerySelectorOfCellPressed(row, column);
 
     if(imgNode) {
         switch($(imgNode).attr("id")) {
@@ -140,7 +165,7 @@ function handleAddWaypointNode(row, column, cell) {
     }
     else {
         grid[row][column].isWaypoint = true;
-        wayponitList.push(grid[row][column]);
+        waypointList.push(grid[row][column]);
         drawWaypointNode(row, column);
     }
 }
@@ -154,6 +179,7 @@ function handleAddDangerpointNode(row, column, cell) {
     }
     else {
         grid[row][column].isDangerpoint = true;
+        grid[row][column].weight = getWeightOfDangerpointNode();
         dangerpointList.push(grid[row][column]);
         drawDangerpointNode(row, column);
     }
@@ -211,14 +237,13 @@ function handleRemoveNode(row, column, cell) {
 /*Button handlers*/
 
 function handleGenerateGrid() {
-
+    restart();
     $("#initialNode").attr('src', 'img/jerry-esperando.png');
 
     numRows = Number($("#rows").val());
     numCols = Number($("#columns").val());
     let numberOfWalls = Number($("#walls").val());
-    start = undefined;
-    end = undefined;
+    
 
     $("#rows").removeClass("is-invalid");
     $("#columns").removeClass("is-invalid");
@@ -321,6 +346,7 @@ function handleRestoreClonedGrid() {
     let gridContainer = $(".grid").parent();
     gridContainer.empty();
     gridContainer.append(generatedGridClon);
+    restart();
 }
 
 
@@ -412,17 +438,17 @@ function drawWall(x, y) {
 /*--path*/
 function findPath() {
     let path;
-    if(!wayponitList || wayponitList.length == 0) {
+    if(!waypointList || waypointList.length == 0) {
         path = astar.search(grid[start.x][start.y], grid[end.x][end.y]);
         draw(path);
     }
-    else if(wayponitList.length >= 1) {
+    else if(waypointList.length >= 1) {
         let i;
-        for(i = 0; i < wayponitList.length-1; i++) {
-            path = astar.search(grid[start.x][start.y], wayponitList[i]);
+        for(i = 0; i < waypointList.length-1; i++) {
+            path = astar.search(grid[start.x][start.y], waypointList[i]);
             draw(path);
         }
-        path = draw(astar.search(wayponitList[i], grid[end.x][end.y]));
+        path = draw(astar.search(waypointList[i], grid[end.x][end.y]));
         draw(path);
     }
     
@@ -430,7 +456,6 @@ function findPath() {
 }
 
 function draw(path) {
-    let gridJqElem = $(".grid");
     let textInfo = "";
     let cell;
 
@@ -442,7 +467,7 @@ function draw(path) {
         $("#tv-content").attr('src', 'img/no-camino.gif');
     } else {
         textInfo = "The path took " + path.length + " steps";
-        cell = gridJqElem.children(".cell").eq(getIndex(path[k].x, path[k].y));
+        cell = getJQuerySelectorOfCellPressed(path[k].x, path[k].y);
         appendHuellas(cell, path);
     }
 
@@ -453,7 +478,6 @@ function draw(path) {
 }
 
 function appendHuellas(cell, path) {
-    let gridJqElem = $(".grid");
     let cellHeight = cell.css("height");
     let cellWidth = cell.css("width");
     cellHeight = Number(cellHeight.slice(0, cellHeight.length-2));
@@ -482,7 +506,7 @@ function appendHuellas(cell, path) {
 
     if(k == path.length - 2) {
         ++k;
-        cell = gridJqElem.children(".cell").eq(getIndex(path[k].x, path[k].y));
+        cell = getJQuerySelectorOfCellPressed(path[k].x, path[k].y);
         setTimeout(function() {
             cell.empty();
             if(path[k].isWaypoint) {
@@ -500,7 +524,7 @@ function appendHuellas(cell, path) {
     }
     else if (k < path.length - 2) {
         ++k;
-        cell = gridJqElem.children(".cell").eq(getIndex(path[k].x, path[k].y));
+        cell = getJQuerySelectorOfCellPressed(path[k].x, path[k].y);
         setTimeout(() => {
             appendHuellas(cell, path);
         }, stepTime);
