@@ -326,8 +326,7 @@ function handleGenerateGrid() {
 };
 
 function handleFindPath() {
-    let gridJqElem = $(".grid");
-    let cell = gridJqElem.children(".cell").eq(getIndex(start.x, start.y));
+    let cell = getJQuerySelectorOfCellPressed(start.x, start.y);
     let height = cell.css("height");
     let width = cell.css("width");
     height = Number(height.slice(0, height.length - 2));
@@ -353,9 +352,7 @@ function handleRestoreClonedGrid() {
 /*Grid functions*/
 /*--start node*/
 function drawStartNode() {
-    let gridJqElem = $(".grid");
-
-    let cell = gridJqElem.children(".cell").eq(getIndex(start.x, start.y));
+    let cell = getJQuerySelectorOfCellPressed(start.x, start.y);
     let height = cell.css("height");
     let width = cell.css("width");
     height = Number(height.slice(0, height.length - 2));
@@ -367,9 +364,7 @@ function drawStartNode() {
 
 /*--waypoint node*/
 function drawWaypointNode(x, y) {
-    let gridJqElem = $(".grid");
-
-    let cell = gridJqElem.children(".cell").eq(getIndex(x, y));
+    let cell = getJQuerySelectorOfCellPressed(x, y);
     cell.empty();
     let height = cell.css("height");
     let width = cell.css("width");
@@ -382,9 +377,7 @@ function drawWaypointNode(x, y) {
 
 /*--dangerpoint node*/
 function drawDangerpointNode(x, y) {
-    let gridJqElem = $(".grid");
-
-    let cell = gridJqElem.children(".cell").eq(getIndex(x, y));
+    let cell = getJQuerySelectorOfCellPressed(x, y);
     cell.empty();
     let height = cell.css("height");
     let width = cell.css("width");
@@ -398,9 +391,7 @@ function drawDangerpointNode(x, y) {
 
 /*--end node*/
 function drawEndNode() {
-    let gridJqElem = $(".grid");
-
-    let cell = gridJqElem.children(".cell").eq(getIndex(end.x, end.y));
+    let cell = getJQuerySelectorOfCellPressed(end.x, end.y);
     cell.empty();
     let height = cell.css("height");
     let width = cell.css("width");
@@ -423,8 +414,7 @@ function drawWalls() {
 }
 
 function drawWall(x, y) {
-    let gridJqElem = $(".grid");
-    let cell = gridJqElem.children(".cell").eq(getIndex(x, y));
+    let cell = getJQuerySelectorOfCellPressed(x, y);
     let height = cell.css("height");
     let width = cell.css("width");
     height = Number(height.slice(0, height.length-2));
