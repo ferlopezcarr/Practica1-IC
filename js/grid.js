@@ -523,7 +523,7 @@ function appendHuellas(cell, path) {
         cell.append("<img src='img/dinamita-apagada.png' height='"+cellHeight*0.9+"px' width='"+cellWidth*0.9+"px'>");
     } else if (path[k].isWaypoint) {
         cell.empty();
-        cell.append("<img src='img/jerry-queso.png' height='"+cellHeight*0.9+"px' width='"+cellWidth*0.9+"px'>");
+        cell.append("<img src='img/queso-mordido.png' height='"+cellHeight*0.9+"px' width='"+cellWidth*0.9+"px'>");
     } else if (path[k + 1].x == path[k].x + 1 && path[k + 1].y == path[k].y + 1 ) { //Down and right
         cell.append("<img class='huella' src='img/huella-abajo-derecha.png' height='"+height+"px' width='"+width+"px'>");
     } else if (path[k + 1].x == path[k].x + 1 && path[k + 1].y == path[k].y - 1) { //Down and left
