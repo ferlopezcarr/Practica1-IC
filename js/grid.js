@@ -552,8 +552,14 @@ function appendHuellas(cell, path) {
             }
             else {
                 cell.append("<img src='img/meta-conseguida.png' height='"+cellHeight+"px' width='"+cellWidth+"px'>");
+                
                 $('#tv').modal('toggle');
                 $("#tv-content").attr('src', 'img/meta-conseguida.gif');
+                if(waypointList && waypointList.length > 0) {
+                    setTimeout(function() {
+                        $("#tv-content").attr('src', 'img/jerry-comiendo.gif');
+                    }, 4000);
+                }
             }
         }, stepTime, path);
     }
