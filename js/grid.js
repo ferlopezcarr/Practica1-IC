@@ -171,7 +171,7 @@ function handleAddWaypointNode(row, column, cell) {
     else {
         grid[row][column].isWaypoint = true;
         waypointList.push(grid[row][column]);
-        drawWaypointNode(row, column);
+        drawWaypointNode(row, column, waypointList.length-1);
     }
 }
 
@@ -396,7 +396,7 @@ function drawStartNode() {
 }
 
 /*--waypoint node*/
-function drawWaypointNode(x, y) {
+function drawWaypointNode(x, y, waypointListIndex) {
     let cell = getJQuerySelectorOfCellPressed(x, y);
     cell.empty();
     let height = cell.css("height");
@@ -406,6 +406,7 @@ function drawWaypointNode(x, y) {
     height = height*0.8;
     width = width*0.8;
     cell.append("<img src='img/queso.png' height='"+height+"px' width='"+width+"px'>");
+    cell.append("<div class='number'><span>"+(Number(waypointListIndex)+1)+"</span></div>");
     console.log(waypointList);
 }
 
@@ -417,7 +418,7 @@ function drawDangerpointNode(x, y) {
     let width = cell.css("width");
     height = Number(height.slice(0, height.length-2));
     width = Number(width.slice(0, width.length-2));
-    height = height*0.8;
+    height = height*0.6;
     width = width*0.8;
     cell.append("<img src='img/dinamita.png' height='"+height+"px' width='"+width+"px'>");
 }
@@ -520,26 +521,33 @@ function appendHuellas(cell, path) {
     /*Calculate direction*/
     if(path[k].isDangerpoint) {
         cell.empty();
-        cell.append("<img src='img/dinamita-apagada.png' height='"+cellHeight*0.9+"px' width='"+cellWidth*0.9+"px'>");
+        cell.append("<img src='img/dinamita-apagada.png' height='"+cellHeight*0.5+"px' width='"+cellWidth*0.9+"px'>");
     } else if (path[k].isWaypoint) {
-        cell.empty();
-        cell.append("<img src='img/queso-mordido.png' height='"+cellHeight*0.9+"px' width='"+cellWidth*0.9+"px'>");
+        cell.find("img").attr("src", "img/queso-mordido.png");
     } else if (path[k + 1].x == path[k].x + 1 && path[k + 1].y == path[k].y + 1 ) { //Down and right
-        cell.append("<img class='huella' src='img/huella-abajo-derecha.png' height='"+height+"px' width='"+width+"px'>");
+        cell.find("img").css({"opacity": "0.5"});
+        cell.append("<img style='position: absolute' class='huella' src='img/huella-abajo-derecha.png' height='"+height+"px' width='"+width+"px'>");
     } else if (path[k + 1].x == path[k].x + 1 && path[k + 1].y == path[k].y - 1) { //Down and left
-        cell.append("<img class='huella' src='img/huella-abajo-izquierda.png' height='"+height+"px' width='"+width+"px'>");
+        cell.find("img").css({"opacity": "0.5"});
+        cell.append("<img style='position: absolute' class='huella' src='img/huella-abajo-izquierda.png' height='"+height+"px' width='"+width+"px'>");
     } else if (path[k + 1].x == path[k].x - 1 && path[k + 1].y == path[k].y + 1) { //Up and right
-        cell.append("<img class='huella' src='img/huella-arriba-derecha.png' height='"+height+"px' width='"+width+"px'>");
+        cell.find("img").css({"opacity": "0.5"});
+        cell.append("<img style='position: absolute' class='huella' src='img/huella-arriba-derecha.png' height='"+height+"px' width='"+width+"px'>");
     } else if (path[k + 1].x == path[k].x - 1 && path[k + 1].y == path[k].y - 1) { //Up and left
-        cell.append("<img class='huella' src='img/huella-arriba-izquierda.png' height='"+height+"px' width='"+width+"px'>");
+        cell.find("img").css({"opacity": "0.5"});
+        cell.append("<img  style='position: absolute' class='huella' src='img/huella-arriba-izquierda.png' height='"+height+"px' width='"+width+"px'>");
     } else if (path[k + 1].x == path[k].x + 1){ // Down
-        cell.append("<img class='huella' src='img/huella-abajo.png' height='"+height+"px' width='"+width+"px'>");
+        cell.find("img").css({"opacity": "0.5"});
+        cell.append("<img style='position: absolute' class='huella' src='img/huella-abajo.png' height='"+height+"px' width='"+width+"px'>");
     } else if (path[k + 1].x == path[k].x - 1) { // Up
-        cell.append("<img class='huella' src='img/huella-arriba.png' height='"+height+"px' width='"+width+"px'>");
+        cell.find("img").css({"opacity": "0.5"});
+        cell.append("<img style='position: absolute' class='huella' src='img/huella-arriba.png' height='"+height+"px' width='"+width+"px'>");
     } else if (path[k + 1].y == path[k].y - 1) { // Left
-        cell.append("<img class='huella' src='img/huella-izquierda.png' height='"+height+"px' width='"+width+"px'>");
+        cell.find("img").css({"opacity": "0.5"});
+        cell.append("<img style='position: absolute' class='huella' src='img/huella-izquierda.png' height='"+height+"px' width='"+width+"px'>");
     } else if (path[k + 1].y == path[k].y + 1) { // Right
-        cell.append("<img class='huella' src='img/huella-derecha.png' height='"+height+"px' width='"+width+"px'>");
+        cell.find("img").css({"opacity": "0.5"});
+        cell.append("<img style='position: absolute' class='huella' src='img/huella-derecha.png' height='"+height+"px' width='"+width+"px'>");
     }
 
     if(k == path.length - 2) {

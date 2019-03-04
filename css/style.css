@@ -45,6 +45,30 @@
     background-size: cover;
 }
 
+.number {
+    position: absolute;
+    z-index: 5;
+    margin-left: 25px;
+    margin-top: 20px;
+
+    display:flex;
+    justify-content: center;
+    align-items: center;
+
+    height: 33px;
+    width: 33px;
+
+    font-weight: bold;
+    color: #000000; 
+    background-image: url("../img/etiqueta.png");
+    background-size: cover;
+}
+
+.number > span {
+    padding-bottom: 7px;
+    padding-left: 5px;
+}
+
 /* Elems */
 .btn {
     background-color: #0469B1;
