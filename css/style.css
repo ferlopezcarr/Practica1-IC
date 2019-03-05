@@ -119,7 +119,7 @@ form-group, label {
     cursor: pointer;
 }
 
-.legend-node:active {
+.legend-node:active, .selected {
     font-weight: bold;
     border: 1px solid #E1E2E1;
     background-color: #E1E2E1;

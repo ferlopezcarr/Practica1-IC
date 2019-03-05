@@ -26,6 +26,16 @@ $(() => {
     $("#cleanPathBtn").click(handleRestoreClonedGrid);
     $(".legend-node").click(function() {
         imgNode = $(this).find("img");
+    
+        if ($(this).hasClass("selected")) {
+            $(this).removeClass("selected");
+            imgNode = undefined;
+        } else if (!$(this).hasClass("not-allowed")) {
+            $("body").find(".selected").removeClass("selected");
+            $(this).addClass("selected");
+        }
+
+        
     });
 
     $(".grid").on("click", ".cell", cellPressedHandler);
@@ -94,6 +104,7 @@ function cellPressedHandler(event) {
     if(imgNode) {
         switch($(imgNode).attr("id")) {
             case "initialNode":
+                imgNode.parent().removeClass("selected");
                 handleAddInitialNode(row, column, cell);
             break;
             case "wallNode":
@@ -106,6 +117,7 @@ function cellPressedHandler(event) {
                 handleAddDangerpointNode(row, column, cell);
             break;
             case "endNode":
+                imgNode.parent().removeClass("selected");
                 handleAddEndNode(row, column, cell);
             break;
             case "removeNode":
