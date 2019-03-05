@@ -60,13 +60,13 @@ function freeNodes() {
     totalNodes = totalNodes - numberOfWallsPlaced - waypointList.length - dangerpointList.length;
 }
 
-// This function establish all the values to their inital values
+// This function establishes all the values to their inital values
 function restart() {
     astar.initGrid();
     addNodeToLegend("#initialNode");
     addNodeToLegend("#endNode");
     $("#initialNode").attr('src', 'img/jerry-esperando.png');
-    $(".grid").on("click", ".cell", cellPressedHandler);
+    $("body").find(".selected").removeClass("selected");
     imgNode = undefined;
     start = undefined;
     end = undefined;
@@ -87,7 +87,7 @@ function cellPressedHandler(event) {
     let row = Number(getRow($(this).index()));
     let column = Number(getColumn($(this).index()));
     let cell = getJQuerySelectorOfCellPressed(row, column);
-
+    
     if(imgNode) {
         switch($(imgNode).attr("id")) {
             case "initialNode":
