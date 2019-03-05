@@ -516,7 +516,10 @@ function draw(path) {
        
         $('#tv').modal('toggle');
         $("#tv-content").attr('src', 'img/no-camino.gif');
-
+    } else if (path.length == 1) {
+        textInfo = "The path took " + path.length + " steps";
+        cell = getJQuerySelectorOfCellPressed(path[k].x, path[k].y);
+        drawEndOfThePath(cell);
     } else {
         textInfo = "The path took " + path.length + " steps";
         cell = getJQuerySelectorOfCellPressed(path[k].x, path[k].y);
@@ -542,11 +545,11 @@ function appendHuellas(cell, path) {
         cell.empty();
         cell.append("<img src='img/dinamita-apagada.png' height='"+cellHeight*0.5+"px' width='"+cellWidth*0.9+"px'>");
     } else if (path[k].isWaypoint) {
+        // Only consider the waypoint if it's the next one
         if (waypointList[0].y == Number(getColumn(cell.index())) && waypointList[0].x == Number(getRow(cell.index()))) {
             cell.find("img").attr("src", "img/queso-mordido.png");
             waypointList.splice(0, 1);
         }
-        
     } else if (path[k + 1].x == path[k].x + 1 && path[k + 1].y == path[k].y + 1 ) { //Down and right
         cell.find("img").css({"opacity": "0.5"});
         cell.append("<img style='position: absolute' class='huella' src='img/huella-abajo-derecha.png' height='"+height+"px' width='"+width+"px'>");
@@ -582,15 +585,8 @@ function appendHuellas(cell, path) {
                 cell.append("<img src='img/jerry-queso.png' height='"+cellHeight*0.9+"px' width='"+cellWidth*0.9+"px'>");
             }
             else {
-                cell.append("<img src='img/meta-conseguida.png' height='"+cellHeight+"px' width='"+cellWidth+"px'>");
+                drawEndOfThePath(cell);
                 
-                $('#tv').modal('toggle');
-                $("#tv-content").attr('src', 'img/meta-conseguida.gif');
-                if(waypointList && waypointList.length > 0) {
-                    setTimeout(function() {
-                        $("#tv-content").attr('src', 'img/jerry-comiendo.gif');
-                    }, 4000);
-                }
             }
         }, stepTime, path);
     }
@@ -605,6 +601,21 @@ function appendHuellas(cell, path) {
     }
 }
 
+function drawEndOfThePath(cell) {
+    let cellHeight = cell.css("height");
+    let cellWidth = cell.css("width");
+
+    cell.empty();
+    cell.append("<img src='img/meta-conseguida.png' height='"+cellHeight+"px' width='"+cellWidth+"px'>");
+                
+    $('#tv').modal('toggle');
+    $("#tv-content").attr('src', 'img/meta-conseguida.gif');
+    if(waypointList && waypointList.length > 0) {
+        setTimeout(function() {
+            $("#tv-content").attr('src', 'img/jerry-comiendo.gif');
+        }, 4000);
+    }
+}
 
 /*Notifiers*/
 function notifyNotEmptyNode() {
