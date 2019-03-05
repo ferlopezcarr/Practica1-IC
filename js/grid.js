@@ -24,20 +24,7 @@ $(() => {
     $("#generateBtn").click(handleGenerateGrid);
     $("#findPathBtn").click(handleFindPath);
     $("#cleanPathBtn").click(handleRestoreClonedGrid);
-    $(".legend-node").click(function() {
-        imgNode = $(this).find("img");
-    
-        if ($(this).hasClass("selected")) {
-            $(this).removeClass("selected");
-            imgNode = undefined;
-        } else if (!$(this).hasClass("not-allowed")) {
-            $("body").find(".selected").removeClass("selected");
-            $(this).addClass("selected");
-        }
-
-        
-    });
-
+    $(".legend-node").click(legendNodePressedHandler);
     $(".grid").on("click", ".cell", cellPressedHandler);
 });
 
@@ -125,6 +112,18 @@ function cellPressedHandler(event) {
             break;
         }
     }   
+}
+
+function legendNodePressedHandler(event) {
+    imgNode = $(this).find("img");
+    
+    if ($(this).hasClass("selected")) {
+        $(this).removeClass("selected");
+        imgNode = undefined;
+    } else if (!$(this).hasClass("not-allowed")) {
+        $("body").find(".selected").removeClass("selected");
+        $(this).addClass("selected");
+    }
 }
 
 function handleAddInitialNode(row, column, cell) {
