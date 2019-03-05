@@ -254,6 +254,8 @@ function handleRemoveNode(row, column, cell) {
             }
             if(found) {
                 waypointList.splice(i-1, 1);
+                drawWaypoints();
+                
             }
         }
         else if(grid[row][column].isDangerpoint) {
@@ -418,7 +420,13 @@ function drawWaypointNode(x, y, waypointListIndex) {
     width = width*0.8;
     cell.append("<img src='img/queso.png' height='"+height+"px' width='"+width+"px'>");
     cell.append("<div class='number'><span>"+(Number(waypointListIndex)+1)+"</span></div>");
-    console.log(waypointList);
+}
+
+
+function drawWaypoints() {
+    waypointList.forEach((wayPoint, index) => {
+        drawWaypointNode(wayPoint.x, wayPoint.y, index);
+    });
 }
 
 /*--dangerpoint node*/
@@ -534,7 +542,11 @@ function appendHuellas(cell, path) {
         cell.empty();
         cell.append("<img src='img/dinamita-apagada.png' height='"+cellHeight*0.5+"px' width='"+cellWidth*0.9+"px'>");
     } else if (path[k].isWaypoint) {
-        cell.find("img").attr("src", "img/queso-mordido.png");
+        if (waypointList[0].y == Number(getColumn(cell.index())) && waypointList[0].x == Number(getRow(cell.index()))) {
+            cell.find("img").attr("src", "img/queso-mordido.png");
+            waypointList.splice(0, 1);
+        }
+        
     } else if (path[k + 1].x == path[k].x + 1 && path[k + 1].y == path[k].y + 1 ) { //Down and right
         cell.find("img").css({"opacity": "0.5"});
         cell.append("<img style='position: absolute' class='huella' src='img/huella-abajo-derecha.png' height='"+height+"px' width='"+width+"px'>");
