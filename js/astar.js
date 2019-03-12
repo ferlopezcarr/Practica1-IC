@@ -35,16 +35,7 @@ var astar = {
     },
 
     initGridValuesToCleanPath() {
-        for (let j = 0; j < grid.length; ++j) {
-            for (let h = 0; h < grid[0].length; ++h) {
-                grid[j][h].f = 0;
-                grid[j][h].g = 0;
-                grid[j][h].h = 0;
-                grid[j][h].parent = null;
-                grid[j][h].closed = false;
-                grid[j][h].visited = false;
-            }
-        }
+        this.initGridValuesForWaypointsPath();
     },
 
 

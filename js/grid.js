@@ -43,7 +43,7 @@ function getColumn(numberOfTheCell) {
     return numberOfTheCell % grid[0].length;
 }
 
-function getJQuerySelectorOfCellPressed(row, column) {
+function getJquerySelectorOfCell(row, column) {
     return $(".grid").children(".cell").eq(getIndex(row, column));
 }
 
@@ -87,7 +87,7 @@ function addNodeToLegend(selector) {
 function cellPressedHandler(event) {
     let row = Number(getRow($(this).index()));
     let column = Number(getColumn($(this).index()));
-    let cell = getJQuerySelectorOfCellPressed(row, column);
+    let cell = getJquerySelectorOfCell(row, column);
     
     if(imgNode) {
         switch($(imgNode).attr("id")) {
@@ -371,24 +371,11 @@ function handleGenerateGrid() {
 
 
 function handleFindPath() {
-    let cell = getJQuerySelectorOfCellPressed(start.x, start.y);
-    let height = cell.css("height");
-    let width = cell.css("width");
-    height = Number(height.slice(0, height.length - 2));
-    width = Number(width.slice(0, width.length - 2));
-    height = height*0.85;
-    width = width*0.85;
-    cell.empty();
-    cell.append("<img src='img/humo.gif' height='"+height+"' width='"+width+"'>");
-
-    $("#initialNode").attr('src', 'img/humo.gif');
-
     findPath();
 }
 
 function handleRestoreClonedGrid() {
     grid = initialStateGrid;
-    console.log(grid);
     drawGrid();
     drawWalls();
     restart();
@@ -410,7 +397,7 @@ function drawGrid() {
 
 
 function drawStartNode() {
-    let cell = getJQuerySelectorOfCellPressed(start.x, start.y);
+    let cell = getJquerySelectorOfCell(start.x, start.y);
     let height = cell.css("height");
     let width = cell.css("width");
     height = Number(height.slice(0, height.length - 2));
@@ -422,7 +409,7 @@ function drawStartNode() {
 
 /*--waypoint node*/
 function drawWaypointNode(x, y, waypointListIndex) {
-    let cell = getJQuerySelectorOfCellPressed(x, y);
+    let cell = getJquerySelectorOfCell(x, y);
     cell.empty();
     let height = cell.css("height");
     let width = cell.css("width");
@@ -443,7 +430,7 @@ function drawWaypoints() {
 
 /*--dangerpoint node*/
 function drawDangerpointNode(x, y) {
-    let cell = getJQuerySelectorOfCellPressed(x, y);
+    let cell = getJquerySelectorOfCell(x, y);
     cell.empty();
     let height = cell.css("height");
     let width = cell.css("width");
@@ -457,7 +444,7 @@ function drawDangerpointNode(x, y) {
 
 /*--end node*/
 function drawEndNode() {
-    let cell = getJQuerySelectorOfCellPressed(end.x, end.y);
+    let cell = getJquerySelectorOfCell(end.x, end.y);
     cell.empty();
     let height = cell.css("height");
     let width = cell.css("width");
@@ -480,7 +467,7 @@ function drawWalls() {
 }
 
 function drawWall(x, y) {
-    let cell = getJQuerySelectorOfCellPressed(x, y);
+    let cell = getJquerySelectorOfCell(x, y);
     let height = cell.css("height");
     let width = cell.css("width");
     height = Number(height.slice(0, height.length-2));
@@ -491,9 +478,22 @@ function drawWall(x, y) {
     cell.css({ "background-color" : "#ECDFBD"});
 }
 
+function drawHumo() {
+    let cell = getJquerySelectorOfCell(start.x, start.y);
+    let height = cell.css("height");
+    let width = cell.css("width");
+    height = Number(height.slice(0, height.length - 2));
+    width = Number(width.slice(0, width.length - 2));
+    height = height*0.85;
+    width = width*0.85;
+
+    cell.empty();
+    cell.append("<img src='img/humo.gif' height='"+height+"' width='"+width+"'>");
+    $("#initialNode").attr('src', 'img/humo.gif');
+}
+
 /*--path*/
 function findPath() {
-    console.log(waypointList);
     let path = [];
     if(!waypointList || waypointList.length == 0) {
         path = astar.search(grid[start.x][start.y], grid[end.x][end.y]);
@@ -523,19 +523,20 @@ function draw(path) {
 
     if (path.length == 0) {
         textInfo = "The point is unreachable";
-        //$(".popover-body").addClass("no-path");
-        //creo que cuando dice none es por esto
        
         $('#tv').modal('toggle');
         $("#tv-content").attr('src', 'img/no-camino.gif');
     } else if (path.length == 1) {
         textInfo = "The path took " + path.length + " steps";
-        cell = getJQuerySelectorOfCellPressed(path[k].x, path[k].y);
+        cell = getJquerySelectorOfCell(path[k].x, path[k].y);
         drawEndOfThePath(cell);
+        drawHumo();
+        
     } else {
         textInfo = "The path took " + path.length + " steps";
-        cell = getJQuerySelectorOfCellPressed(path[k].x, path[k].y);
+        cell = getJquerySelectorOfCell(path[k].x, path[k].y);
         appendHuellas(cell, path);
+        drawHumo();
     }
 
     tomSay(textInfo, 3);
@@ -590,7 +591,7 @@ function appendHuellas(cell, path) {
 
     if(k == path.length - 2) {
         ++k;
-        cell = getJQuerySelectorOfCellPressed(path[k].x, path[k].y);
+        cell = getJquerySelectorOfCell(path[k].x, path[k].y);
         setTimeout(function() {
             cell.empty();
             if(path[k].isWaypoint) {
@@ -604,7 +605,7 @@ function appendHuellas(cell, path) {
     }
     else if (k < path.length - 2) {
         ++k;
-        cell = getJQuerySelectorOfCellPressed(path[k].x, path[k].y);
+        cell = getJquerySelectorOfCell(path[k].x, path[k].y);
         setTimeout(() => {
             appendHuellas(cell, path);
         }, stepTime);
