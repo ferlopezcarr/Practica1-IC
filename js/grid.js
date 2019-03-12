@@ -1,6 +1,7 @@
 /* ------ Grid Javascript : Practica 1 - IC ------ */
 /*Vars*/
 let grid = [];
+let initialStateGrid;
 let start;
 let end;
 let k = 0;
@@ -62,7 +63,7 @@ function freeNodes() {
 
 // This function establishes all the values to their inital values
 function restart() {
-    astar.initGrid();
+    astar.initGridValuesToCleanPath();
     addNodeToLegend("#initialNode");
     addNodeToLegend("#endNode");
     $("#initialNode").attr('src', 'img/jerry-esperando.png');
@@ -338,9 +339,9 @@ function handleGenerateGrid() {
         
         astar.initGrid();
         astar.generateRandomWalls(numberOfWalls, start, end);
+        initialStateGrid = grid;
+
         drawWalls();
-        gridHtmlClon = $(".grid").clone();
-        gridMatrixClon = JSON.parse(JSON.stringify(grid));
 
         tomSay("Select the node you want to add from the node list and then click on the desired cell", 4);
 
@@ -368,6 +369,7 @@ function handleGenerateGrid() {
     }
 };
 
+
 function handleFindPath() {
     let cell = getJQuerySelectorOfCellPressed(start.x, start.y);
     let height = cell.css("height");
@@ -385,18 +387,28 @@ function handleFindPath() {
 }
 
 function handleRestoreClonedGrid() {
-    let gridContainer = $(".grid").parent();
-    gridContainer.empty();
-    gridContainer.append(gridHtmlClon);
-    gridHtmlClon = $(".grid").clone();
-    grid = gridMatrixClon;
-    gridMatrixClon = JSON.parse(JSON.stringify(grid));
+    grid = initialStateGrid;
+    console.log(grid);
+    drawGrid();
+    drawWalls();
     restart();
 }
 
 
 /*Grid functions*/
 /*--start node*/
+
+function drawGrid() {
+    $(".grid").empty();
+    //inicializacion de la matriz tanto en css como en js
+        for(let i=0; i < Number(numRows); i++) {
+            for(let j=0; j < Number(numCols); j++) {
+                $(".grid").append("<div class='cell'></div>");
+            }
+        }
+}
+
+
 function drawStartNode() {
     let cell = getJQuerySelectorOfCellPressed(start.x, start.y);
     let height = cell.css("height");
